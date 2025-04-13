@@ -1,18 +1,17 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
+
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// Serve static files from the 'public' folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+app.use(express.json());
 
-// Route to serve input.html file
-app.get('/input', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'input.html'));
+app.get('/data.json', (req, res) => {
+  res.sendFile(path.join(__dirname, 'data.json'));
 });
 
-// Optionally, your other routes here
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
