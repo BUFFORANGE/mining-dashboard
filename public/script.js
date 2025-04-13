@@ -71,10 +71,26 @@ fetch('/data.json')
       data: {
         labels,
         datasets: [
-          { label: "BTC", data: data.map(d => d.BTC), backgroundColor: "#FFA500" },
-          { label: "LTC", data: data.map(d => d.LTC), backgroundColor: "#bebebe" },
-          { label: "DOGE", data: data.map(d => d.DOGE), backgroundColor: "#D2B48C" },
-          { label: "KAS", data: data.map(d => d.KAS), backgroundColor: "#4ad6ff" }
+          { 
+            label: "BTC", 
+            data: data.map(d => d.BTC * d.BTC_usd), // Mined amount * BTC USD price
+            backgroundColor: "#FFA500"
+          },
+          { 
+            label: "LTC", 
+            data: data.map(d => d.LTC * d.LTC_usd), // Mined amount * LTC USD price
+            backgroundColor: "#bebebe"
+          },
+          { 
+            label: "DOGE", 
+            data: data.map(d => d.DOGE * d.DOGE_usd), // Mined amount * DOGE USD price
+            backgroundColor: "#D2B48C"
+          },
+          { 
+            label: "KAS", 
+            data: data.map(d => d.KAS * d.KAS_usd), // Mined amount * KAS USD price
+            backgroundColor: "#4ad6ff"
+          }
         ]
       },
       options: {
@@ -95,13 +111,10 @@ fetch('/data.json')
         scales: {
           x: { ticks: { color: '#00fff7' } },
           y: {
-            type: 'logarithmic',
             ticks: {
               color: '#00fff7',
-              callback: val => {
-                const remain = val / Math.pow(10, Math.floor(Math.log10(val)));
-                if ([1, 2, 5].includes(remain)) return val;
-                return '';
+              callback: function(value) {
+                return `$${value.toFixed(2)}`; // Format the y-axis as USD
               }
             }
           }
