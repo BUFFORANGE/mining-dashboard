@@ -1,0 +1,60 @@
+/* Orbitron glowing style, background flicker, dashboard glass effect, and chart styling */
+body {
+  background: url('cave.png') center/cover no-repeat;
+  font-family: 'Orbitron', sans-serif;
+  color: #00fff7;
+  margin: 0;
+  padding: 2rem;
+  animation: glowFlicker 2s infinite alternate;
+}
+.dashboard {
+  background: rgba(15, 15, 28, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid #00fff740;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow: 0 0 15px #00fff720;
+  animation: float 5s ease-in-out infinite;
+}
+h1.glow {
+  text-align: center;
+  color: #00fff7;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 300;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  display: inline-block;
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+#usd-value { color: #00ff00; }
+.positive { color: #00ff00; }
+.negative { color: #ff0000; }
+@keyframes pulseGlow {
+  0%, 100% { text-shadow: 0 0 1px #00fff7, 0 0 2px #00fff7; }
+  50% { text-shadow: 0 0 0.5px #00fff7, 0 0 1px #00fff7; }
+}
+@keyframes glowFlicker {
+  0% { background-color: rgba(15, 15, 28, 0.6); }
+  50% { background-color: rgba(15, 15, 28, 0.7); }
+  100% { background-color: rgba(15, 15, 28, 0.6); }
+}
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+canvas {
+  background-color: #1a1a2e;
+  border: 5px solid #00fff7;
+  border-radius: 30px;
+  padding: 10px;
+  margin: 2rem 0;
+  transition: all 0.3s ease-in-out;
+}
+canvas:hover {
+  border: 5px solid #ff00ff;
+  transform: scale(1.05);
+}

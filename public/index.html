@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mining Dashboard Derp Outposts</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    /* Body styling with background image */
+    body {
+      background: url('cave.png') center/cover no-repeat; /* Cave image as background */
+      font-family: 'Orbitron', sans-serif;
+      color: #00fff7;
+      margin: 0;
+      padding: 2rem;
+      animation: glowFlicker 2s infinite alternate; /* Animation for flicker effect */
+    }
+
+    /* Dashboard container */
+    .dashboard {
+      background: rgba(15, 15, 28, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid #00fff740;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      box-shadow: 0 0 15px #00fff720;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    /* Title with glowing text */
+    h1.glow {
+      text-align: center;
+      color: #00fff7;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 300;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      display: inline-block;
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    /* Update timestamp styling */
+    #update-time {
+      color: #00fff7;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Total mined value styling */
+    #total-mined-today {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    #usd-value {
+      color: #00ff00; /* Green for USD amount */
+    }
+
+    /* Percentage change styling */
+    #percentage-change {
+      font-size: 1.5rem;
+    }
+
+    .positive {
+      color: #00ff00;
+    }
+
+    .negative {
+      color: #ff0000;
+    }
+
+    /* Animation for glowing text */
+    @keyframes pulseGlow {
+      0%, 100% {
+        text-shadow: 0 0 1px #00fff7, 0 0 2px #00fff7;
+      }
+      50% {
+        text-shadow: 0 0 0.5px #00fff7, 0 0 1px #00fff7;
+      }
+    }
+
+    /* Flicker effect for background */
+    @keyframes glowFlicker {
+      0% {
+        background-color: rgba(15, 15, 28, 0.6);
+      }
+      50% {
+        background-color: rgba(15, 15, 28, 0.7);
+      }
+      100% {
+        background-color: rgba(15, 15, 28, 0.6);
+      }
+    }
+
+    /* Floating effect for elements */
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Glowing borders and hover effects for charts */
+    canvas {
+      background-color: #1a1a2e;
+      border: 5px solid #00fff7;
+      border-radius: 30px;
+      padding: 10px;
+      margin: 2rem 0;
+      transition: all 0.3s ease-in-out;
+    }
+
+    canvas:hover {
+      border: 5px solid #ff00ff;
+      transform: scale(1.05);
+    }
+
+    /* Glowing buttons with hover effect */
+    button {
+      background-color: transparent;
+      color: #00fff7;
+      border: 2px solid #00fff7;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00fff7;
+      color: #000;
+      box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <h1 class="glow">
+      <span class="title-main">⛏️ Mining Dashboard</span><br>
+      <span class="title-sub">Derp Outposts</span>
+    </h1>    
+    <p id="update-time">Loading...</p>
+
+    <!-- Total mined and percentage change -->
+    <div id="total-mined-today">
+      Total Mined Today: <span id="usd-value">Loading...</span>
+    </div>
+    <div id="percentage-change">
+      Loading percentage change...
+    </div>
+
+    <canvas id="usdChart"></canvas>
+    <canvas id="coinChart"></canvas>
+  </div>
+
+  <script>
+    function calculatePercentageChange(current, previous) {
+      return ((current - previous) / previous) * 100;
+    }
+
+    function getDominantPoints(data, threshold = 130) {
+      return data.map(value => value >= threshold);
+    }
+
+    fetch('data.json')
+      .then(res => res.json())
+      .then(data => {
+        const labels = data.map(d => d.date);
+        const usdData = data.map(d => d.USD);
+
+        // Get dominant points
+        const dominantPoints = getDominantPoints(usdData, 130);
+
+        // Calculate percentage change
+        const percentageChange = usdData.map((usd, i) =>
+          i === 0 ? 0 : calculatePercentageChange(usd, usdData[i - 1])
+        );
+
+        const latestUSD = usdData[usdData.length - 1];
+        const previousUSD = usdData[usdData.length - 2];
+        const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
+
+        // Display USD amount and % change
+        document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
+        const pctElem = document.getElementById("percentage-change");
+        if (latestPercentageChange > 0) {
+          pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
+          pctElem.classList.add("positive");
+          pctElem.classList.remove("negative");
+        } else {
+          pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
+          pctElem.classList.add("negative");
+          pctElem.classList.remove("positive");
+        }
+
+        document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
+
+        // USD Chart
+        new Chart(document.getElementById("usdChart"), {
+          type: "line",
+          data: {
+            labels,
+            datasets: [{
+              label: "USD Mined",
+              data: usdData,
+              borderColor: "#00fff7",
+              backgroundColor: "rgba(0,255,247,0.2)",
+              fill: true,
+              pointStyle: 'circle',
+              pointRadius: function (context) {
+                return dominantPoints[context.dataIndex] ? 8 : 4; // Larger points for dominant points
+              },
+              pointHoverRadius: 10,
+              pointBorderColor: "#00fff7",
+              pointBackgroundColor: function (context) {
+                return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7"; // Neon purple for dominant points
+              }
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              tooltip: {
+                backgroundColor: '#111',
+                titleColor: '#00fff7',
+                bodyColor: '#00fff7',
+                borderColor: '#00fff7',
+                borderWidth: 1,
+                titleFont: { size: 14 },
+                bodyFont: { size: 18 },
+                padding: 12
+              },
+              legend: { labels: { color: '#00fff7' } }
+            },
+            scales: {
+              x: { ticks: { color: '#00fff7' } },
+              y: { ticks: { color: '#00fff7' } }
+            }
+          }
+        });
+
+        // Coin Chart
+        new Chart(document.getElementById("coinChart"), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              { label: "BTC", data: data.map(d => d.BTC), backgroundColor: "#FFA500" },
+              { label: "LTC", data: data.map(d => d.LTC), backgroundColor: "#bebebe" },
+              { label: "DOGE", data: data.map(d => d.DOGE), backgroundColor: "#D2B48C" },
+              { label: "KAS", data: data.map(d => d.KAS), backgroundColor: "#4ad6ff" }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              tooltip: {
+                backgroundColor: '#111',
+                titleColor: '#00fff7',
+                bodyColor: '#00fff7',
+                borderColor: '#00fff7',
+                borderWidth: 1,
+                titleFont: { size: 14 },
+                bodyFont: { size: 18 },
+                padding: 12
+              },
+              legend: { labels: { color: '#00fff7' } }
+            },
+            scales: {
+              x: { ticks: { color: '#00fff7' } },
+              y: {
+                type: 'logarithmic',
+                ticks: {
+                  color: '#00fff7',
+                  callback: function(value) {
+                    const remain = value / Math.pow(10, Math.floor(Math.log10(value)));
+                    if (remain === 1 || remain === 2 || remain === 5) {
+                      return value;
+                    }
+                    return '';
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+  </script>
+</body>
+</html>
