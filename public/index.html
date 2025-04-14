@@ -188,19 +188,19 @@
         const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
 
         // Display USD amount and % change
-        document.getElementById("usd-value").textContent = $${latestUSD.toFixed(2)};
+        document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
         const pctElem = document.getElementById("percentage-change");
         if (latestPercentageChange > 0) {
-          pctElem.textContent = +${latestPercentageChange.toFixed(2)}%;
+          pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
           pctElem.classList.add("positive");
           pctElem.classList.remove("negative");
         } else {
-          pctElem.textContent = ${latestPercentageChange.toFixed(2)}%;
+          pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
           pctElem.classList.add("negative");
           pctElem.classList.remove("positive");
         }
 
-        document.getElementById("update-time").textContent = Updated: ${new Date().toLocaleString()};
+        document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
         // USD Chart
         new Chart(document.getElementById("usdChart"), {
