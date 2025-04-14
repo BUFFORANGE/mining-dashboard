@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mining Dashboard Derp Outposts</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -157,7 +157,7 @@
     </div>
 
     <canvas id="usdChart"></canvas>
-    <canvas id="coinChart"></canvas>
+    <canvas id="coinChart"></canvas>  <!-- Bar chart goes here -->
   </div>
 
   <script>
@@ -202,36 +202,6 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // USD Chart
-        const crownPlugin = {
-          id: 'crownPlugin',
-          afterDatasetsDraw(chart) {
-            const { ctx } = chart;
-            const data = chart.data.datasets[0].data;
-
-            if (!data || !data.length) return;
-
-            // Find the index of the highest value
-            const maxValue = Math.max(...data);
-            const index = data.indexOf(maxValue);
-
-            const meta = chart.getDatasetMeta(0);
-            const point = meta.data[index];
-            if (!point) return;
-
-            const x = point.x;
-            const y = point.y;
-
-            ctx.save();
-            ctx.font = '20px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('👑', x, y - 25);
-            ctx.font = '12px sans-serif';
-            ctx.fillText('All-Time High', x, y - 40);
-            ctx.restore();
-          }
-        };
-
         // USD Line Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
@@ -269,23 +239,21 @@
             scales: {
               x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
               y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
-            },
-            plugins: [crownPlugin]
+            }
           }
         });
 
-        // Coin Bar Chart
+        // Coin Bar Chart (original code)
         new Chart(document.getElementById("coinChart"), {
           type: "bar",
           data: {
             labels,
-            datasets: [{
-              label: "Coins Mined",
-              data: data.map(d => d.coins),
-              backgroundColor: "#00ff00",
-              borderColor: "#00fff7",
-              borderWidth: 1
-            }]
+            datasets: [
+              { label: "BTC", data: data.map(d => d.BTC), backgroundColor: "#FFA500" },
+              { label: "LTC", data: data.map(d => d.LTC), backgroundColor: "#bebebe" },
+              { label: "DOGE", data: data.map(d => d.DOGE), backgroundColor: "#D2B48C" },
+              { label: "KAS", data: data.map(d => d.KAS), backgroundColor: "#4ad6ff" }
+            ]
           },
           options: {
             responsive: true,
@@ -303,8 +271,20 @@
               legend: { labels: { color: '#00fff7' } }
             },
             scales: {
-              x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
-              y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
+              x: { ticks: { color: '#00fff7' } },
+              y: {
+                type: 'logarithmic',
+                ticks: {
+                  color: '#00fff7',
+                  callback: function(value) {
+                    const remain = value / Math.pow(10, Math.floor(Math.log10(value)));
+                    if (remain === 1 || remain === 2 || remain === 5) {
+                      return value;
+                    }
+                    return '';
+                  }
+                }
+              }
             }
           }
         });
