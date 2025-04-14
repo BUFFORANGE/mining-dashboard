@@ -7,19 +7,16 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400&display=swap" rel="stylesheet">
-
   <style>
-    /* Body styling with background image */
     body {
-      background: url('cave.png') center/cover no-repeat; /* Cave image as background */
+      background: url('cave.png') center/cover no-repeat;
       font-family: 'Orbitron', sans-serif;
       color: #00fff7;
       margin: 0;
       padding: 2rem;
-      animation: glowFlicker 2s infinite alternate; /* Animation for flicker effect */
+      animation: glowFlicker 2s infinite alternate;
     }
 
-    /* Dashboard container */
     .dashboard {
       background: rgba(15, 15, 28, 0.6);
       backdrop-filter: blur(10px);
@@ -33,7 +30,6 @@
       animation: float 5s ease-in-out infinite;
     }
 
-    /* Title with glowing text */
     h1.glow {
       text-align: center;
       color: #00fff7;
@@ -45,24 +41,21 @@
       animation: pulseGlow 3s ease-in-out infinite;
     }
 
-    /* Update timestamp styling */
     #update-time {
       color: #00fff7;
       font-size: 0.9rem;
       margin-bottom: 1rem;
     }
 
-    /* Total mined value styling */
     #total-mined-today {
       font-size: 1.5rem;
       margin-top: 1rem;
     }
 
     #usd-value {
-      color: #00ff00; /* Green for USD amount */
+      color: #00ff00;
     }
 
-    /* Percentage change styling */
     #percentage-change {
       font-size: 1.5rem;
     }
@@ -75,7 +68,6 @@
       color: #ff0000;
     }
 
-    /* Animation for glowing text */
     @keyframes pulseGlow {
       0%, 100% {
         text-shadow: 0 0 1px #00fff7, 0 0 2px #00fff7;
@@ -85,7 +77,6 @@
       }
     }
 
-    /* Flicker effect for background */
     @keyframes glowFlicker {
       0% {
         background-color: rgba(15, 15, 28, 0.6);
@@ -98,20 +89,18 @@
       }
     }
 
-    /* Floating effect for elements */
     @keyframes float {
       0% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
       100% { transform: translateY(0); }
     }
 
-    /* Glowing borders and hover effects for charts */
     canvas {
       background-color: #1a1a2e;
       border: 5px solid #00fff7;
       border-radius: 30px;
       padding: 10px;
-      margin: 2rem 0;
+      margin: 2rem 0 1rem 0;
       transition: all 0.3s ease-in-out;
     }
 
@@ -120,7 +109,6 @@
       transform: scale(1.05);
     }
 
-    /* Glowing buttons with hover effect */
     button {
       background-color: transparent;
       color: #00fff7;
@@ -138,6 +126,16 @@
       box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
     }
 
+    #daily-ath {
+      margin-top: -1.5rem;
+      margin-bottom: 2rem;
+      font-size: 1.2rem;
+      color: #00fff7;
+    }
+
+    #daily-ath span {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -148,7 +146,6 @@
     </h1>    
     <p id="update-time">Loading...</p>
 
-    <!-- Total mined and percentage change -->
     <div id="total-mined-today">
       Total Mined Today: <span id="usd-value">Loading...</span>
     </div>
@@ -157,6 +154,7 @@
     </div>
 
     <canvas id="usdChart"></canvas>
+    <div id="daily-ath">Loading ATH...</div>
     <canvas id="coinChart"></canvas>
   </div>
 
@@ -169,16 +167,19 @@
       return data.map(value => value >= threshold);
     }
 
+    function formatDate(dateStr) {
+      const [year, month, day] = dateStr.split("-");
+      return `${month}-${day}-${year}`;
+    }
+
     fetch('data.json')
       .then(res => res.json())
       .then(data => {
         const labels = data.map(d => d.date);
         const usdData = data.map(d => d.USD);
 
-        // Get dominant points
         const dominantPoints = getDominantPoints(usdData, 130);
 
-        // Calculate percentage change
         const percentageChange = usdData.map((usd, i) =>
           i === 0 ? 0 : calculatePercentageChange(usd, usdData[i - 1])
         );
@@ -187,7 +188,6 @@
         const previousUSD = usdData[usdData.length - 2];
         const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
 
-        // Display USD amount and % change
         document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
         const pctElem = document.getElementById("percentage-change");
         if (latestPercentageChange > 0) {
@@ -202,6 +202,12 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
+        // 🔥 Daily ATH logic
+        const maxUSD = Math.max(...usdData);
+        const maxIndex = usdData.indexOf(maxUSD);
+        const maxDateFormatted = formatDate(labels[maxIndex]);
+        document.getElementById("daily-ath").innerHTML = `🚀 <span>Daily ATH:</span> <span style="color:#00ff00;">$${maxUSD.toFixed(2)}</span> on <span style="color:#ff00ff;">${maxDateFormatted}</span>`;
+
         // USD Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
@@ -215,12 +221,12 @@
               fill: true,
               pointStyle: 'circle',
               pointRadius: function (context) {
-                return dominantPoints[context.dataIndex] ? 8 : 4; // Larger points for dominant points
+                return dominantPoints[context.dataIndex] ? 8 : 4;
               },
               pointHoverRadius: 10,
               pointBorderColor: "#00fff7",
               pointBackgroundColor: function (context) {
-                return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7"; // Neon purple for dominant points
+                return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7";
               }
             }]
           },
