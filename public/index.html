@@ -202,36 +202,6 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // Crown plugin for the USD chart
-        const crownPlugin = {
-          id: 'crownPlugin',
-          afterDatasetsDraw(chart) {
-            const { ctx } = chart;
-            const data = chart.data.datasets[0].data;
-
-            if (!data || !data.length) return;
-
-            // Find the index of the highest value
-            const maxValue = Math.max(...data);
-            const index = data.indexOf(maxValue);
-
-            const meta = chart.getDatasetMeta(0);
-            const point = meta.data[index];
-            if (!point) return;
-
-            const x = point.x;
-            const y = point.y;
-
-            ctx.save();
-            ctx.font = '30px sans-serif'; // Increase font size for visibility
-            ctx.textAlign = 'center';
-            ctx.fillText('👑', x, y - 25); // Display the crown emoji 25 pixels above the point
-            ctx.font = '12px sans-serif';
-            ctx.fillText('All-Time High', x, y - 40); // Label for the All-Time High
-            ctx.restore();
-          }
-        };
-
         // USD Line Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
