@@ -202,7 +202,7 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // USD Chart
+        // Crown plugin for the USD chart
         const crownPlugin = {
           id: 'crownPlugin',
           afterDatasetsDraw(chart) {
@@ -223,11 +223,11 @@
             const y = point.y;
 
             ctx.save();
-            ctx.font = '20px sans-serif';
+            ctx.font = '30px sans-serif'; // Increase font size for visibility
             ctx.textAlign = 'center';
-            ctx.fillText('👑', x, y - 25);
+            ctx.fillText('👑', x, y - 25); // Display the crown emoji 25 pixels above the point
             ctx.font = '12px sans-serif';
-            ctx.fillText('All-Time High', x, y - 40);
+            ctx.fillText('All-Time High', x, y - 40); // Label for the All-Time High
             ctx.restore();
           }
         };
@@ -273,7 +273,7 @@
             plugins: [crownPlugin]
           }
         });
-        
+
         // Coin Bar Chart (original code)
         new Chart(document.getElementById("coinChart"), {
           type: "bar",
