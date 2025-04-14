@@ -35,13 +35,18 @@ fetch('/data.json')
 
     document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-    // 👑 Crown plugin for all-time high annotation
+    // 👑 Dynamic Crown Plugin: finds highest USD value and adds crown icon
     const crownPlugin = {
       id: 'crownPlugin',
       afterDatasetsDraw(chart) {
         const { ctx } = chart;
-        const index = chart.data.labels.indexOf('04-12-2025');
-        if (index === -1) return;
+        const data = chart.data.datasets[0].data;
+
+        if (!data || !data.length) return;
+
+        // Find the index of the highest value
+        const maxValue = Math.max(...data);
+        const index = data.indexOf(maxValue);
 
         const meta = chart.getDatasetMeta(0);
         const point = meta.data[index];
