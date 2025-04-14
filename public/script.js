@@ -1,11 +1,9 @@
 function calculatePercentageChange(current, previous) {
   return ((current - previous) / previous) * 100;
 }
-
 function getDominantPoints(data, threshold = 130) {
   return data.map(value => value >= threshold);
 }
-
 fetch('/data.json')
   .then(res => res.json())
   .then(data => {
@@ -15,57 +13,21 @@ fetch('/data.json')
     const percentageChange = usdData.map((usd, i) =>
       i === 0 ? 0 : calculatePercentageChange(usd, usdData[i - 1])
     );
-
     const latestUSD = usdData[usdData.length - 1];
     const previousUSD = usdData[usdData.length - 2];
     const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
-
-    document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
+    document.getElementById("usd-value").textContent = $${latestUSD.toFixed(2)};
     const pctElem = document.getElementById("percentage-change");
-
     if (latestPercentageChange > 0) {
-      pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
+      pctElem.textContent = +${latestPercentageChange.toFixed(2)}%;
       pctElem.classList.add("positive");
       pctElem.classList.remove("negative");
     } else {
-      pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
+      pctElem.textContent = ${latestPercentageChange.toFixed(2)}%;
       pctElem.classList.add("negative");
       pctElem.classList.remove("positive");
     }
-
-    document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
-
-    // 👑 Dynamic Crown Plugin: finds highest USD value and adds crown icon
-    const crownPlugin = {
-      id: 'crownPlugin',
-      afterDatasetsDraw(chart) {
-        const { ctx } = chart;
-        const data = chart.data.datasets[0].data;
-
-        if (!data || !data.length) return;
-
-        // Find the index of the highest value
-        const maxValue = Math.max(...data);
-        const index = data.indexOf(maxValue);
-
-        const meta = chart.getDatasetMeta(0);
-        const point = meta.data[index];
-        if (!point) return;
-
-        const x = point.x;
-        const y = point.y;
-
-        ctx.save();
-        ctx.font = '20px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('👑', x, y - 25);
-        ctx.font = '12px sans-serif';
-        ctx.fillText('All-Time High', x, y - 40);
-        ctx.restore();
-      }
-    };
-
-    // USD Line Chart
+    document.getElementById("update-time").textContent = Updated: ${new Date().toLocaleString()};
     new Chart(document.getElementById("usdChart"), {
       type: "line",
       data: {
@@ -102,11 +64,8 @@ fetch('/data.json')
           x: { ticks: { color: '#00fff7' } },
           y: { ticks: { color: '#00fff7' } }
         }
-      },
-      plugins: [crownPlugin]
+      }
     });
-
-    // Coin Bar Chart
     new Chart(document.getElementById("coinChart"), {
       type: "bar",
       data: {
@@ -114,22 +73,22 @@ fetch('/data.json')
         datasets: [
           { 
             label: "BTC", 
-            data: data.map(d => d.BTC * d.BTC_usd),
+            data: data.map(d => d.BTC * d.BTC_usd), // Mined amount * BTC USD price
             backgroundColor: "#FFA500"
           },
           { 
             label: "LTC", 
-            data: data.map(d => d.LTC * d.LTC_usd),
+            data: data.map(d => d.LTC * d.LTC_usd), // Mined amount * LTC USD price
             backgroundColor: "#bebebe"
           },
           { 
             label: "DOGE", 
-            data: data.map(d => d.DOGE * d.DOGE_usd),
+            data: data.map(d => d.DOGE * d.DOGE_usd), // Mined amount * DOGE USD price
             backgroundColor: "#D2B48C"
           },
           { 
             label: "KAS", 
-            data: data.map(d => d.KAS * d.KAS_usd),
+            data: data.map(d => d.KAS * d.KAS_usd), // Mined amount * KAS USD price
             backgroundColor: "#4ad6ff"
           }
         ]
@@ -155,7 +114,7 @@ fetch('/data.json')
             ticks: {
               color: '#00fff7',
               callback: function(value) {
-                return `$${value.toFixed(2)}`;
+                return $${value.toFixed(2)}; // Format the y-axis as USD
               }
             }
           }
