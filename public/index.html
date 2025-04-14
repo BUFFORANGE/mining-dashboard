@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mining Dashboard Derp Outposts</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -157,7 +157,7 @@
     </div>
 
     <canvas id="usdChart"></canvas>
-    <canvas id="coinChart"></canvas>  <!-- Bar chart goes here -->
+    <canvas id="coinChart"></canvas>
   </div>
 
   <script>
@@ -202,6 +202,36 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
+        // USD Chart
+        const crownPlugin = {
+          id: 'crownPlugin',
+          afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            const data = chart.data.datasets[0].data;
+
+            if (!data || !data.length) return;
+
+            // Find the index of the highest value
+            const maxValue = Math.max(...data);
+            const index = data.indexOf(maxValue);
+
+            const meta = chart.getDatasetMeta(0);
+            const point = meta.data[index];
+            if (!point) return;
+
+            const x = point.x;
+            const y = point.y;
+
+            ctx.save();
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('👑', x, y - 25);
+            ctx.font = '12px sans-serif';
+            ctx.fillText('All-Time High', x, y - 40);
+            ctx.restore();
+          }
+        };
+
         // USD Line Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
@@ -239,10 +269,11 @@
             scales: {
               x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
               y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
-            }
+            },
+            plugins: [crownPlugin]
           }
         });
-
+        
         // Coin Bar Chart (original code)
         new Chart(document.getElementById("coinChart"), {
           type: "bar",
