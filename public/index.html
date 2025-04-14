@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!<DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -188,51 +188,21 @@
         const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
 
         // Display USD amount and % change
-        document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
+        document.getElementById("usd-value").textContent = $${latestUSD.toFixed(2)};
         const pctElem = document.getElementById("percentage-change");
         if (latestPercentageChange > 0) {
-          pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
+          pctElem.textContent = +${latestPercentageChange.toFixed(2)}%;
           pctElem.classList.add("positive");
           pctElem.classList.remove("negative");
         } else {
-          pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
+          pctElem.textContent = ${latestPercentageChange.toFixed(2)}%;
           pctElem.classList.add("negative");
           pctElem.classList.remove("positive");
         }
 
-        document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
+        document.getElementById("update-time").textContent = Updated: ${new Date().toLocaleString()};
 
-        // Crown plugin for the USD chart
-        const crownPlugin = {
-          id: 'crownPlugin',
-          afterDatasetsDraw(chart) {
-            const { ctx } = chart;
-            const data = chart.data.datasets[0].data;
-
-            if (!data || !data.length) return;
-
-            // Find the index of the highest value
-            const maxValue = Math.max(...data);
-            const index = data.indexOf(maxValue);
-
-            const meta = chart.getDatasetMeta(0);
-            const point = meta.data[index];
-            if (!point) return;
-
-            const x = point.x;
-            const y = point.y;
-
-            ctx.save();
-            ctx.font = '30px sans-serif'; // Increase font size for visibility
-            ctx.textAlign = 'center';
-            ctx.fillText('👑', x, y - 25); // Display the crown emoji 25 pixels above the point
-            ctx.font = '12px sans-serif';
-            ctx.fillText('All-Time High', x, y - 40); // Label for the All-Time High
-            ctx.restore();
-          }
-        };
-
-        // USD Line Chart
+        // USD Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
           data: {
@@ -244,10 +214,14 @@
               backgroundColor: "rgba(0,255,247,0.2)",
               fill: true,
               pointStyle: 'circle',
-              pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 8 : 4,
+              pointRadius: function (context) {
+                return dominantPoints[context.dataIndex] ? 8 : 4; // Larger points for dominant points
+              },
               pointHoverRadius: 10,
               pointBorderColor: "#00fff7",
-              pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
+              pointBackgroundColor: function (context) {
+                return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7"; // Neon purple for dominant points
+              }
             }]
           },
           options: {
@@ -265,16 +239,14 @@
               },
               legend: { labels: { color: '#00fff7' } }
             },
-            interaction: { mode: 'nearest', axis: 'x', intersect: false },
             scales: {
-              x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
-              y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
-            },
-            plugins: [crownPlugin]
+              x: { ticks: { color: '#00fff7' } },
+              y: { ticks: { color: '#00fff7' } }
+            }
           }
         });
 
-        // Coin Bar Chart (original code)
+        // Coin Chart
         new Chart(document.getElementById("coinChart"), {
           type: "bar",
           data: {
