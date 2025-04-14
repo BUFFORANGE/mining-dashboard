@@ -151,6 +151,7 @@
     <!-- Total mined and percentage change -->
     <div id="total-mined-today">
       Total Mined Today: <span id="usd-value">Loading...</span>
+      <span id="ath-crown"></span> <!-- ATH and crown emoji section -->
     </div>
     <div id="percentage-change">
       Loading percentage change...
@@ -199,6 +200,13 @@
           pctElem.classList.add("negative");
           pctElem.classList.remove("positive");
         }
+
+        // Get ATH (All-Time High) for USD
+        const athUSD = Math.max(...usdData); // Find the max value in the USD data
+        const athDate = labels[usdData.indexOf(athUSD)]; // Get the date of the ATH
+
+        // Display ATH and crown emoji
+        document.getElementById("ath-crown").innerHTML = `👑 ATH: $${athUSD.toFixed(2)} on ${athDate}`;
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
@@ -292,3 +300,4 @@
   </script>
 </body>
 </html>
+
