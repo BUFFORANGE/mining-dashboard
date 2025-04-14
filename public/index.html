@@ -1,4 +1,4 @@
-!<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -202,7 +202,37 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // USD Chart
+        // USD Line Chart with crown plugin
+        const crownPlugin = {
+          id: 'crownPlugin',
+          afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            const data = chart.data.datasets[0].data;
+
+            if (!data || !data.length) return;
+
+            // Find the index of the highest value
+            const maxValue = Math.max(...data);
+            const index = data.indexOf(maxValue);
+
+            const meta = chart.getDatasetMeta(0);
+            const point = meta.data[index];
+            if (!point) return;
+
+            const x = point.x;
+            const y = point.y;
+
+            ctx.save();
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('👑', x, y - 25); // Place crown emoji
+            ctx.font = '12px sans-serif';
+            ctx.fillText('All-Time High', x, y - 40);
+            ctx.restore();
+          }
+        };
+
+        // USD Line Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
           data: {
@@ -243,53 +273,8 @@
               x: { ticks: { color: '#00fff7' } },
               y: { ticks: { color: '#00fff7' } }
             }
-          }
-        });
-
-        // Coin Chart
-        new Chart(document.getElementById("coinChart"), {
-          type: "bar",
-          data: {
-            labels,
-            datasets: [
-              { label: "BTC", data: data.map(d => d.BTC), backgroundColor: "#FFA500" },
-              { label: "LTC", data: data.map(d => d.LTC), backgroundColor: "#bebebe" },
-              { label: "DOGE", data: data.map(d => d.DOGE), backgroundColor: "#D2B48C" },
-              { label: "KAS", data: data.map(d => d.KAS), backgroundColor: "#4ad6ff" }
-            ]
           },
-          options: {
-            responsive: true,
-            plugins: {
-              tooltip: {
-                backgroundColor: '#111',
-                titleColor: '#00fff7',
-                bodyColor: '#00fff7',
-                borderColor: '#00fff7',
-                borderWidth: 1,
-                titleFont: { size: 14 },
-                bodyFont: { size: 18 },
-                padding: 12
-              },
-              legend: { labels: { color: '#00fff7' } }
-            },
-            scales: {
-              x: { ticks: { color: '#00fff7' } },
-              y: {
-                type: 'logarithmic',
-                ticks: {
-                  color: '#00fff7',
-                  callback: function(value) {
-                    const remain = value / Math.pow(10, Math.floor(Math.log10(value)));
-                    if (remain === 1 || remain === 2 || remain === 5) {
-                      return value;
-                    }
-                    return '';
-                  }
-                }
-              }
-            }
-          }
+          plugins: [crownPlugin]
         });
       });
   </script>
