@@ -40,7 +40,7 @@ fetch('/data.json')
       id: 'crownPlugin',
       afterDatasetsDraw(chart) {
         const { ctx } = chart;
-        const index = chart.data.labels.indexOf('2025-04-12');
+        const index = chart.data.labels.indexOf('04-12-2025');
         if (index === -1) return;
 
         const meta = chart.getDatasetMeta(0);
