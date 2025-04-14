@@ -202,7 +202,13 @@
 
         // Then everything else in here stays the same...
         const labels = data.map(d => d.date);
-        const usdData = data.map(d => d.USD);
+        const usdData = data.map(d =>
+          d.BTC * rates.BTC +
+          d.LTC * rates.LTC +
+          d.DOGE * rates.DOGE +
+          d.KAS * rates.KAS
+        );
+
         const dominantPoints = getDominantPoints(usdData, 130);
 
         const percentageChange = usdData.map((usd, i) =>
