@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
+    /* Body styling with background image */
     body {
       background: url('cave.png') center/cover no-repeat;
       font-family: 'Orbitron', sans-serif;
@@ -70,7 +71,7 @@
     }
 
     #daily-ath {
-      margin-top: 3rem;
+      margin-top: 1rem;
       margin-bottom: 2rem;
       font-size: 1.2rem;
       color: #00fff7;
@@ -142,6 +143,7 @@
 
     <canvas id="usdChart"></canvas>
 
+    <!-- New Daily ATH Section -->
     <div id="daily-ath">Daily ATH: Loading...</div>
 
     <canvas id="coinChart"></canvas>
@@ -191,10 +193,12 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
+        // Daily ATH
         let maxUSD = Math.max(...usdData);
         let athDay = data.find(d => d.USD === maxUSD).date;
         document.getElementById("daily-ath").textContent = `Daily ATH: $${maxUSD.toFixed(2)} on ${formatDate(athDay)}`;
 
+        // USD Chart
         new Chart(document.getElementById("usdChart"), {
           type: "line",
           data: {
@@ -238,6 +242,7 @@
           }
         });
 
+        // Coin Chart
         new Chart(document.getElementById("coinChart"), {
           type: "bar",
           data: {
