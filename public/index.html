@@ -201,9 +201,35 @@
           pctElem.classList.remove("positive");
         }
 
-        // Get ATH (All-Time High) for USD
-        const athUSD = Math.max(...usdData); // Find the max value in the USD data
-        const athDate = labels[usdData.indexOf(athUSD)]; // Get the date of the ATH
+       // USD Chart
+        const crownPlugin = {
+          id: 'crownPlugin',
+          afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            const data = chart.data.datasets[0].data;
+
+            if (!data || !data.length) return;
+
+            // Find the index of the highest value
+            const maxValue = Math.max(...data);
+            const index = data.indexOf(maxValue);
+
+            const meta = chart.getDatasetMeta(0);
+            const point = meta.data[index];
+            if (!point) return;
+
+            const x = point.x;
+            const y = point.y;
+
+            ctx.save();
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('👑', x, y - 25);
+            ctx.font = '12px sans-serif';
+            ctx.fillText('All-Time High', x, y - 40);
+            ctx.restore();
+          }
+        };
 
         // Display ATH and crown emoji
         document.getElementById("ath-crown").innerHTML = `👑 ATH: $${athUSD.toFixed(2)} on ${athDate}`;
