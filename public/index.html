@@ -202,7 +202,7 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // USD Line Chart with crown plugin
+        // USD Chart
         const crownPlugin = {
           id: 'crownPlugin',
           afterDatasetsDraw(chart) {
@@ -225,7 +225,7 @@
             ctx.save();
             ctx.font = '20px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('👑', x, y - 25); // Place crown emoji
+            ctx.fillText('👑', x, y - 25);
             ctx.font = '12px sans-serif';
             ctx.fillText('All-Time High', x, y - 40);
             ctx.restore();
@@ -244,14 +244,47 @@
               backgroundColor: "rgba(0,255,247,0.2)",
               fill: true,
               pointStyle: 'circle',
-              pointRadius: function (context) {
-                return dominantPoints[context.dataIndex] ? 8 : 4; // Larger points for dominant points
-              },
+              pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 8 : 4,
               pointHoverRadius: 10,
               pointBorderColor: "#00fff7",
-              pointBackgroundColor: function (context) {
-                return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7"; // Neon purple for dominant points
-              }
+              pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              tooltip: {
+                backgroundColor: '#111',
+                titleColor: '#00fff7',
+                bodyColor: '#00fff7',
+                borderColor: '#00fff7',
+                borderWidth: 1,
+                titleFont: { size: 14 },
+                bodyFont: { size: 18 },
+                padding: 12
+              },
+              legend: { labels: { color: '#00fff7' } }
+            },
+            interaction: { mode: 'nearest', axis: 'x', intersect: false },
+            scales: {
+              x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
+              y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
+            },
+            plugins: [crownPlugin]
+          }
+        });
+
+        // Coin Bar Chart
+        new Chart(document.getElementById("coinChart"), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [{
+              label: "Coins Mined",
+              data: data.map(d => d.coins),
+              backgroundColor: "#00ff00",
+              borderColor: "#00fff7",
+              borderWidth: 1
             }]
           },
           options: {
@@ -270,11 +303,10 @@
               legend: { labels: { color: '#00fff7' } }
             },
             scales: {
-              x: { ticks: { color: '#00fff7' } },
-              y: { ticks: { color: '#00fff7' } }
+              x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
+              y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
             }
-          },
-          plugins: [crownPlugin]
+          }
         });
       });
   </script>
