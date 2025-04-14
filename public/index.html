@@ -196,7 +196,8 @@
         // Daily ATH
         let maxUSD = Math.max(...usdData);
         let athDay = data.find(d => d.USD === maxUSD).date;
-        document.getElementById("daily-ath").textContent = `Daily ATH: $${maxUSD.toFixed(2)} on ${formatDate(athDay)}`;
+        document.getElementById("daily-ath").innerHTML = `🚀 Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
+
 
         // USD Chart
         new Chart(document.getElementById("usdChart"), {
