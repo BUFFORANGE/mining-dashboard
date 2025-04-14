@@ -187,12 +187,22 @@
       return `${month}-${day}-${year}`;
     }
 
-    fetch('data.json')
+   fetch('data.json')
+  .then(res => res.json())
+  .then(data => {
+    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,litecoin,dogecoin,kaspa&vs_currencies=usd')
       .then(res => res.json())
-      .then(data => {
+      .then(prices => {
+        const rates = {
+          BTC: prices.bitcoin.usd,
+          LTC: prices.litecoin.usd,
+          DOGE: prices.dogecoin.usd,
+          KAS: prices.kaspa.usd
+        };
+
+        // Then everything else in here stays the same...
         const labels = data.map(d => d.date);
         const usdData = data.map(d => d.USD);
-
         const dominantPoints = getDominantPoints(usdData, 130);
 
         const percentageChange = usdData.map((usd, i) =>
@@ -222,7 +232,7 @@
         let athDay = data.find(d => d.USD === maxUSD).date;
         document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
-        // USD Chart
+        // USD Chart (same as before)
         new Chart(document.getElementById("usdChart"), {
           type: "line",
           data: {
@@ -266,16 +276,23 @@
           }
         });
 
-        // Coin Chart
+        // USD Coin Chart
+        const usdCoinData = {
+          BTC: data.map(d => d.BTC * rates.BTC),
+          LTC: data.map(d => d.LTC * rates.LTC),
+          DOGE: data.map(d => d.DOGE * rates.DOGE),
+          KAS: data.map(d => d.KAS * rates.KAS)
+        };
+
         new Chart(document.getElementById("coinChart"), {
           type: "bar",
           data: {
             labels,
             datasets: [
-              { label: "BTC", data: data.map(d => d.BTC), backgroundColor: "#FFA500" },
-              { label: "LTC", data: data.map(d => d.LTC), backgroundColor: "#bebebe" },
-              { label: "DOGE", data: data.map(d => d.DOGE), backgroundColor: "#D2B48C" },
-              { label: "KAS", data: data.map(d => d.KAS), backgroundColor: "#4ad6ff" }
+              { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
+              { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
+              { label: "DOGE (USD)", data: usdCoinData.DOGE, backgroundColor: "#D2B48C" },
+              { label: "KAS (USD)", data: usdCoinData.KAS, backgroundColor: "#4ad6ff" }
             ]
           },
           options: {
@@ -289,22 +306,22 @@
                 borderWidth: 1,
                 titleFont: { size: 14 },
                 bodyFont: { size: 18 },
-                padding: 12
+                padding: 12,
+                callbacks: {
+                  label: function(context) {
+                    return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
+                  }
+                }
               },
               legend: { labels: { color: '#00fff7' } }
             },
             scales: {
               x: { ticks: { color: '#00fff7' } },
               y: {
-                type: 'logarithmic',
                 ticks: {
                   color: '#00fff7',
                   callback: function(value) {
-                    const remain = value / Math.pow(10, Math.floor(Math.log10(value)));
-                    if (remain === 1 || remain === 2 || remain === 5) {
-                      return value;
-                    }
-                    return '';
+                    return `$${value}`;
                   }
                 }
               }
@@ -312,6 +329,7 @@
           }
         });
       });
-  </script>
+  });
+ </script>
 </body>
 </html>
