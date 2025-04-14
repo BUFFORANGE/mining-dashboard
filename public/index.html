@@ -174,167 +174,169 @@
   </div>
 
   <script>
-    function calculatePercentageChange(current, previous) {
-      return ((current - previous) / previous) * 100;
-    }
-
-    function getDominantPoints(data, threshold = 130) {
-      return data.map(value => value >= threshold);
-    }
-
-    function formatDate(dateStr) {
-      const [month, day, year] = dateStr.split("-");
-      return `${month}-${day}-${year}`;
-    }
-
-   fetch('data.json')
-  .then(res => res.json())
-  .then(data => {
-    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,litecoin,dogecoin,kaspa&vs_currencies=usd')
-      .then(res => res.json())
-      .then(prices => {
-        const rates = {
-          BTC: prices.bitcoin.usd,
-          LTC: prices.litecoin.usd,
-          DOGE: prices.dogecoin.usd,
-          KAS: prices.kaspa.usd
-        };
-      
-        // Calculate live USD per day
-        const usdData = data.map(d =>
-          (d.BTC || 0) * rates.BTC +
-          (d.LTC || 0) * rates.LTC +
-          (d.DOGE || 0) * rates.DOGE +
-          (d.KAS || 0) * rates.KAS
-        );
-
-        const dominantPoints = getDominantPoints(usdData, 130);
-
-        const percentageChange = usdData.map((usd, i) =>
-          i === 0 ? 0 : calculatePercentageChange(usd, usdData[i - 1])
-        );
-
-        const latestUSD = usdData[usdData.length - 1];
-        const previousUSD = usdData[usdData.length - 2];
-        const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
-
-        document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
-        const pctElem = document.getElementById("percentage-change");
-        if (latestPercentageChange > 0) {
-          pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
-          pctElem.classList.add("positive");
-          pctElem.classList.remove("negative");
-        } else {
-          pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
-          pctElem.classList.add("negative");
-          pctElem.classList.remove("positive");
-        }
-
-        document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
-
-        // Daily ATH (now that we don't have d.USD in data.json)
-        let maxUSD = Math.max(...usdData);
-        let maxIndex = usdData.indexOf(maxUSD);
-        let athDay = data[maxIndex].date;
-        document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
-
-       // USD Line Chart
-new Chart(document.getElementById("usdChart"), {
-  type: "line",
-  data: {
-    labels: data.map(d => d.date),
-    datasets: [{
-      label: "USD Mined",
-      data: usdData,
-      borderColor: "#00fff7",
-      backgroundColor: "rgba(0,255,247,0.2)",
-      fill: true,
-      pointStyle: 'circle',
-      pointRadius: function (context) {
-        return dominantPoints[context.dataIndex] ? 8 : 4;
-      },
-      pointHoverRadius: 10,
-      pointBorderColor: "#00fff7",
-      pointBackgroundColor: function (context) {
-        return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7";
-      }
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        backgroundColor: '#111',
-        titleColor: '#00fff7',
-        bodyColor: '#00fff7',
-        borderColor: '#00fff7',
-        borderWidth: 1,
-        titleFont: { size: 14 },
-        bodyFont: { size: 18 },
-        padding: 12
-      },
-      legend: { labels: { color: '#00fff7' } }
-    },
-    scales: {
-      x: { ticks: { color: '#00fff7' } },
-      y: { ticks: { color: '#00fff7' } }
-    }
+  function calculatePercentageChange(current, previous) {
+    return ((current - previous) / previous) * 100;
   }
-});
 
-// Coin Bar Chart (in USD)
-const usdCoinData = {
-  BTC: data.map(d => d.BTC * rates.BTC),
-  LTC: data.map(d => d.LTC * rates.LTC),
-  DOGE: data.map(d => d.DOGE * rates.DOGE),
-  KAS: data.map(d => d.KAS * rates.KAS)
-};
-
-new Chart(document.getElementById("coinChart"), {
-  type: "bar",
-  data: {
-    labels: data.map(d => d.date),
-    datasets: [
-      { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
-      { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
-      { label: "DOGE (USD)", data: usdCoinData.DOGE, backgroundColor: "#D2B48C" },
-      { label: "KAS (USD)", data: usdCoinData.KAS, backgroundColor: "#4ad6ff" }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        backgroundColor: '#111',
-        titleColor: '#00fff7',
-        bodyColor: '#00fff7',
-        borderColor: '#00fff7',
-        borderWidth: 1,
-        titleFont: { size: 14 },
-        bodyFont: { size: 18 },
-        padding: 12,
-        callbacks: {
-          label: function(context) {
-            return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
-          }
-        }
-      },
-      legend: { labels: { color: '#00fff7' } }
-    },
-    scales: {
-      x: { ticks: { color: '#00fff7' } },
-      y: {
-        ticks: {
-          color: '#00fff7',
-          callback: function(value) {
-            return `$${value}`;
-          }
-        }
-      }
-    }
+  function getDominantPoints(data, threshold = 130) {
+    return data.map(value => value >= threshold);
   }
-});
 
- </script>
+  function formatDate(dateStr) {
+    const [month, day, year] = dateStr.split("-");
+    return `${month}-${day}-${year}`;
+  }
+
+  fetch('data.json')
+    .then(res => res.json())
+    .then(data => {
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,litecoin,dogecoin,kaspa&vs_currencies=usd')
+        .then(res => res.json())
+        .then(prices => {
+          const rates = {
+            BTC: prices.bitcoin.usd,
+            LTC: prices.litecoin.usd,
+            DOGE: prices.dogecoin.usd,
+            KAS: prices.kaspa.usd
+          };
+
+          // Calculate live USD per day
+          const usdData = data.map(d =>
+            (d.BTC || 0) * rates.BTC +
+            (d.LTC || 0) * rates.LTC +
+            (d.DOGE || 0) * rates.DOGE +
+            (d.KAS || 0) * rates.KAS
+          );
+
+          const dominantPoints = getDominantPoints(usdData, 130);
+
+          const percentageChange = usdData.map((usd, i) =>
+            i === 0 ? 0 : calculatePercentageChange(usd, usdData[i - 1])
+          );
+
+          const latestUSD = usdData[usdData.length - 1];
+          const previousUSD = usdData[usdData.length - 2];
+          const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
+
+          document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
+          const pctElem = document.getElementById("percentage-change");
+          if (latestPercentageChange > 0) {
+            pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
+            pctElem.classList.add("positive");
+            pctElem.classList.remove("negative");
+          } else {
+            pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
+            pctElem.classList.add("negative");
+            pctElem.classList.remove("positive");
+          }
+
+          document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
+
+          // Daily ATH
+          let maxUSD = Math.max(...usdData);
+          let maxIndex = usdData.indexOf(maxUSD);
+          let athDay = data[maxIndex].date;
+          document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
+
+          // USD Line Chart
+          new Chart(document.getElementById("usdChart"), {
+            type: "line",
+            data: {
+              labels: data.map(d => d.date),
+              datasets: [{
+                label: "USD Mined",
+                data: usdData,
+                borderColor: "#00fff7",
+                backgroundColor: "rgba(0,255,247,0.2)",
+                fill: true,
+                pointStyle: 'circle',
+                pointRadius: function (context) {
+                  return dominantPoints[context.dataIndex] ? 8 : 4;
+                },
+                pointHoverRadius: 10,
+                pointBorderColor: "#00fff7",
+                pointBackgroundColor: function (context) {
+                  return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7";
+                }
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  backgroundColor: '#111',
+                  titleColor: '#00fff7',
+                  bodyColor: '#00fff7',
+                  borderColor: '#00fff7',
+                  borderWidth: 1,
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 18 },
+                  padding: 12
+                },
+                legend: { labels: { color: '#00fff7' } }
+              },
+              scales: {
+                x: { ticks: { color: '#00fff7' } },
+                y: { ticks: { color: '#00fff7' } }
+              }
+            }
+          });
+
+          // Coin Bar Chart (in USD)
+          const usdCoinData = {
+            BTC: data.map(d => (d.BTC || 0) * rates.BTC),
+            LTC: data.map(d => (d.LTC || 0) * rates.LTC),
+            DOGE: data.map(d => (d.DOGE || 0) * rates.DOGE),
+            KAS: data.map(d => (d.KAS || 0) * rates.KAS)
+          };
+
+          new Chart(document.getElementById("coinChart"), {
+            type: "bar",
+            data: {
+              labels: data.map(d => d.date),
+              datasets: [
+                { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
+                { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
+                { label: "DOGE (USD)", data: usdCoinData.DOGE, backgroundColor: "#D2B48C" },
+                { label: "KAS (USD)", data: usdCoinData.KAS, backgroundColor: "#4ad6ff" }
+              ]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  backgroundColor: '#111',
+                  titleColor: '#00fff7',
+                  bodyColor: '#00fff7',
+                  borderColor: '#00fff7',
+                  borderWidth: 1,
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 18 },
+                  padding: 12,
+                  callbacks: {
+                    label: function (context) {
+                      return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
+                    }
+                  }
+                },
+                legend: { labels: { color: '#00fff7' } }
+              },
+              scales: {
+                x: { ticks: { color: '#00fff7' } },
+                y: {
+                  ticks: {
+                    color: '#00fff7',
+                    callback: function (value) {
+                      return `$${value}`;
+                    }
+                  }
+                }
+              }
+            }
+          });
+
+        });
+    });
+</script>
 </body>
 </html>
