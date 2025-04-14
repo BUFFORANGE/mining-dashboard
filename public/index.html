@@ -202,47 +202,35 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // USD Line Chart
-        new Chart(document.getElementById("usdChart"), {
-          type: "line",
-          data: {
-            labels,
-            datasets: [{
-              label: "USD Mined",
-              data: usdData,
-              borderColor: "#00fff7",
-              backgroundColor: "rgba(0,255,247,0.2)",
-              fill: true,
-              pointStyle: 'circle',
-              pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 8 : 4,
-              pointHoverRadius: 10,
-              pointBorderColor: "#00fff7",
-              pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              tooltip: {
-                backgroundColor: '#111',
-                titleColor: '#00fff7',
-                bodyColor: '#00fff7',
-                borderColor: '#00fff7',
-                borderWidth: 1,
-                titleFont: { size: 14 },
-                bodyFont: { size: 18 },
-                padding: 12
-              },
-              legend: { labels: { color: '#00fff7' } }
-            },
-            interaction: { mode: 'nearest', axis: 'x', intersect: false },
-            scales: {
-              x: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } },
-              y: { grid: { color: '#444', borderColor: '#444' }, ticks: { color: '#00fff7' } }
-            },
-            plugins: [crownPlugin]
+        // USD Line Chart with crown plugin
+        const crownPlugin = {
+          id: 'crownPlugin',
+          afterDatasetsDraw(chart) {
+            const { ctx } = chart;
+            const data = chart.data.datasets[0].data;
+
+            if (!data || !data.length) return;
+
+            // Find the index of the highest value
+            const maxValue = Math.max(...data);
+            const index = data.indexOf(maxValue);
+
+            const meta = chart.getDatasetMeta(0);
+            const point = meta.data[index];
+            if (!point) return;
+
+            const x = point.x;
+            const y = point.y;
+
+            ctx.save();
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('👑', x, y - 25); // Place crown emoji
+            ctx.font = '12px sans-serif';
+            ctx.fillText('All-Time High', x, y - 40);
+            ctx.restore();
           }
-        });
+        };
 
         // Coin Bar Chart (original code)
         new Chart(document.getElementById("coinChart"), {
