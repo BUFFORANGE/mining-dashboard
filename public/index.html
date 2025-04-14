@@ -199,14 +199,13 @@
           DOGE: prices.dogecoin.usd,
           KAS: prices.kaspa.usd
         };
-
-        // Then everything else in here stays the same...
-        const labels = data.map(d => d.date);
+      
+        // Calculate live USD per day
         const usdData = data.map(d =>
-          d.BTC * rates.BTC +
-          d.LTC * rates.LTC +
-          d.DOGE * rates.DOGE +
-          d.KAS * rates.KAS
+          (d.BTC || 0) * rates.BTC +
+          (d.LTC || 0) * rates.LTC +
+          (d.DOGE || 0) * rates.DOGE +
+          (d.KAS || 0) * rates.KAS
         );
 
         const dominantPoints = getDominantPoints(usdData, 130);
@@ -233,109 +232,109 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // Daily ATH
+        // Daily ATH (now that we don't have d.USD in data.json)
         let maxUSD = Math.max(...usdData);
-        let athDay = data.find(d => d.USD === maxUSD).date;
+        let maxIndex = usdData.indexOf(maxUSD);
+        let athDay = data[maxIndex].date;
         document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
-        // USD Chart (same as before)
-        new Chart(document.getElementById("usdChart"), {
-          type: "line",
-          data: {
-            labels,
-            datasets: [{
-              label: "USD Mined",
-              data: usdData,
-              borderColor: "#00fff7",
-              backgroundColor: "rgba(0,255,247,0.2)",
-              fill: true,
-              pointStyle: 'circle',
-              pointRadius: function (context) {
-                return dominantPoints[context.dataIndex] ? 8 : 4;
-              },
-              pointHoverRadius: 10,
-              pointBorderColor: "#00fff7",
-              pointBackgroundColor: function (context) {
-                return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7";
-              }
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              tooltip: {
-                backgroundColor: '#111',
-                titleColor: '#00fff7',
-                bodyColor: '#00fff7',
-                borderColor: '#00fff7',
-                borderWidth: 1,
-                titleFont: { size: 14 },
-                bodyFont: { size: 18 },
-                padding: 12
-              },
-              legend: { labels: { color: '#00fff7' } }
-            },
-            scales: {
-              x: { ticks: { color: '#00fff7' } },
-              y: { ticks: { color: '#00fff7' } }
-            }
-          }
-        });
+       // USD Line Chart
+new Chart(document.getElementById("usdChart"), {
+  type: "line",
+  data: {
+    labels: data.map(d => d.date),
+    datasets: [{
+      label: "USD Mined",
+      data: usdData,
+      borderColor: "#00fff7",
+      backgroundColor: "rgba(0,255,247,0.2)",
+      fill: true,
+      pointStyle: 'circle',
+      pointRadius: function (context) {
+        return dominantPoints[context.dataIndex] ? 8 : 4;
+      },
+      pointHoverRadius: 10,
+      pointBorderColor: "#00fff7",
+      pointBackgroundColor: function (context) {
+        return dominantPoints[context.dataIndex] ? "#ff00ff" : "#00fff7";
+      }
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        backgroundColor: '#111',
+        titleColor: '#00fff7',
+        bodyColor: '#00fff7',
+        borderColor: '#00fff7',
+        borderWidth: 1,
+        titleFont: { size: 14 },
+        bodyFont: { size: 18 },
+        padding: 12
+      },
+      legend: { labels: { color: '#00fff7' } }
+    },
+    scales: {
+      x: { ticks: { color: '#00fff7' } },
+      y: { ticks: { color: '#00fff7' } }
+    }
+  }
+});
 
-        // USD Coin Chart
-        const usdCoinData = {
-          BTC: data.map(d => d.BTC * rates.BTC),
-          LTC: data.map(d => d.LTC * rates.LTC),
-          DOGE: data.map(d => d.DOGE * rates.DOGE),
-          KAS: data.map(d => d.KAS * rates.KAS)
-        };
+// Coin Bar Chart (in USD)
+const usdCoinData = {
+  BTC: data.map(d => d.BTC * rates.BTC),
+  LTC: data.map(d => d.LTC * rates.LTC),
+  DOGE: data.map(d => d.DOGE * rates.DOGE),
+  KAS: data.map(d => d.KAS * rates.KAS)
+};
 
-        new Chart(document.getElementById("coinChart"), {
-          type: "bar",
-          data: {
-            labels,
-            datasets: [
-              { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
-              { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
-              { label: "DOGE (USD)", data: usdCoinData.DOGE, backgroundColor: "#D2B48C" },
-              { label: "KAS (USD)", data: usdCoinData.KAS, backgroundColor: "#4ad6ff" }
-            ]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              tooltip: {
-                backgroundColor: '#111',
-                titleColor: '#00fff7',
-                bodyColor: '#00fff7',
-                borderColor: '#00fff7',
-                borderWidth: 1,
-                titleFont: { size: 14 },
-                bodyFont: { size: 18 },
-                padding: 12,
-                callbacks: {
-                  label: function(context) {
-                    return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
-                  }
-                }
-              },
-              legend: { labels: { color: '#00fff7' } }
-            },
-            scales: {
-              x: { ticks: { color: '#00fff7' } },
-              y: {
-                ticks: {
-                  color: '#00fff7',
-                  callback: function(value) {
-                    return `$${value}`;
-                  }
-                }
-              }
-            }
+new Chart(document.getElementById("coinChart"), {
+  type: "bar",
+  data: {
+    labels: data.map(d => d.date),
+    datasets: [
+      { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
+      { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
+      { label: "DOGE (USD)", data: usdCoinData.DOGE, backgroundColor: "#D2B48C" },
+      { label: "KAS (USD)", data: usdCoinData.KAS, backgroundColor: "#4ad6ff" }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        backgroundColor: '#111',
+        titleColor: '#00fff7',
+        bodyColor: '#00fff7',
+        borderColor: '#00fff7',
+        borderWidth: 1,
+        titleFont: { size: 14 },
+        bodyFont: { size: 18 },
+        padding: 12,
+        callbacks: {
+          label: function(context) {
+            return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
           }
-        });
-      });
-  });
+        }
+      },
+      legend: { labels: { color: '#00fff7' } }
+    },
+    scales: {
+      x: { ticks: { color: '#00fff7' } },
+      y: {
+        ticks: {
+          color: '#00fff7',
+          callback: function(value) {
+            return `$${value}`;
+          }
+        }
+      }
+    }
+  }
+});
+
  </script>
 </body>
 </html>
