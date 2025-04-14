@@ -7,9 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400&display=swap" rel="stylesheet">
-
   <style>
-    /* Body styling with background image */
     body {
       background: url('cave.png') center/cover no-repeat;
       font-family: 'Orbitron', sans-serif;
@@ -70,22 +68,25 @@
       color: #ff0000;
     }
 
-    #daily-ath {
-      margin-top: 1rem;
-      margin-bottom: 2rem;
-      font-size: 1.2rem;
-      color: #00fff7;
-    }
-
     @keyframes pulseGlow {
-      0%, 100% { text-shadow: 0 0 1px #00fff7, 0 0 2px #00fff7; }
-      50% { text-shadow: 0 0 0.5px #00fff7, 0 0 1px #00fff7; }
+      0%, 100% {
+        text-shadow: 0 0 1px #00fff7, 0 0 2px #00fff7;
+      }
+      50% {
+        text-shadow: 0 0 0.5px #00fff7, 0 0 1px #00fff7;
+      }
     }
 
     @keyframes glowFlicker {
-      0% { background-color: rgba(15, 15, 28, 0.6); }
-      50% { background-color: rgba(15, 15, 28, 0.7); }
-      100% { background-color: rgba(15, 15, 28, 0.6); }
+      0% {
+        background-color: rgba(15, 15, 28, 0.6);
+      }
+      50% {
+        background-color: rgba(15, 15, 28, 0.7);
+      }
+      100% {
+        background-color: rgba(15, 15, 28, 0.6);
+      }
     }
 
     @keyframes float {
@@ -99,7 +100,7 @@
       border: 5px solid #00fff7;
       border-radius: 30px;
       padding: 10px;
-      margin: 2rem 0;
+      margin: 2rem 0 2rem 0;
       transition: all 0.3s ease-in-out;
     }
 
@@ -124,6 +125,17 @@
       color: #000;
       box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
     }
+
+    #daily-ath {
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+      font-size: 1.2rem;
+      color: #00fff7;
+    }
+
+    #daily-ath span {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -131,7 +143,7 @@
     <h1 class="glow">
       <span class="title-main">⛏️ Mining Dashboard</span><br>
       <span class="title-sub">Derp Outposts</span>
-    </h1>
+    </h1>    
     <p id="update-time">Loading...</p>
 
     <div id="total-mined-today">
@@ -142,10 +154,7 @@
     </div>
 
     <canvas id="usdChart"></canvas>
-
-    <!-- New Daily ATH Section -->
-    <div id="daily-ath">Daily ATH: Loading...</div>
-
+    <div id="daily-ath">Loading ATH...</div>
     <canvas id="coinChart"></canvas>
   </div>
 
@@ -193,10 +202,11 @@
 
         document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
-        // Daily ATH
-        let maxUSD = Math.max(...usdData);
-        let athDay = data.find(d => d.USD === maxUSD).date;
-        document.getElementById("daily-ath").textContent = `Daily ATH: $${maxUSD.toFixed(2)} on ${formatDate(athDay)}`;
+        // 🔥 Daily ATH logic
+        const maxUSD = Math.max(...usdData);
+        const maxIndex = usdData.indexOf(maxUSD);
+        const maxDateFormatted = formatDate(labels[maxIndex]);
+        document.getElementById("daily-ath").innerHTML = `🚀 <span>Daily ATH:</span> <span style="color:#00ff00;">$${maxUSD.toFixed(2)}</span> on <span style="color:#ff00ff;">${maxDateFormatted}</span>`;
 
         // USD Chart
         new Chart(document.getElementById("usdChart"), {
