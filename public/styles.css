@@ -61,7 +61,7 @@ canvas:hover {
 
 @media (max-width: 768px) {
   body {
-    padding: 1rem;
+    padding: 0.5rem; /* Reduce body padding */
   }
 
   .dashboard {
@@ -70,7 +70,8 @@ canvas:hover {
   }
 
   h1.glow {
-    font-size: 1.8rem;
+    font-size: 1.6rem; /* Smaller title */
+    margin-bottom: 1rem;
   }
 
   #live-rates {
@@ -80,16 +81,16 @@ canvas:hover {
     top: auto;
     margin: 0 auto 1rem;
     text-align: center;
-    font-size: 1.2rem;
-    padding: 1rem;
-  }
-
-  .rate {
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller font size */
+    padding: 0.8rem; /* Less padding */
   }
 
   .live-prices-title {
-    font-size: 1.3rem;
+    font-size: 1.1rem; /* Smaller title font size */
+  }
+
+  .rate {
+    font-size: 1rem; /* Smaller text for each coin rate */
   }
 
   canvas {
@@ -100,7 +101,27 @@ canvas:hover {
   #total-mined-today,
   #percentage-change,
   #daily-ath {
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller text */
+  }
+
+  #update-time {
+    font-size: 0.9rem; /* Slightly smaller update time */
+  }
+
+  #usd-value {
+    font-size: 1.1rem; /* Slightly smaller value font */
+  }
+
+  #percentage-change {
+    font-size: 1.1rem; /* Smaller percentage change font */
+  }
+
+  .positive, .negative {
+    font-size: 1.1rem; /* Smaller positive/negative change text */
+  }
+
+  /* Smaller chart padding */
+  canvas {
+    margin: 1rem 0;
   }
 }
-
