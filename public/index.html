@@ -195,14 +195,17 @@
 <body>
 
   <!-- Live Exchange Rates Box -->
-  <div id="live-rates">
-    <h3 class="live-prices-title">Live Prices</h3>
-    <div class="rate" id="rate-BTC">BTC: Loading...</div>
-    <div class="rate" id="rate-LTC">LTC: Loading...</div>
-    <div class="rate" id="rate-DOGE">DOGE: Loading...</div>
-    <div class="rate" id="rate-KAS">KAS: Loading...</div>
-    <button id="toggle-button">Hide</button>
-  </div>
+<div id="live-rates">
+  <h3 class="live-prices-title">Live Prices</h3>
+  <div class="rate" id="rate-BTC">BTC: Loading...</div>
+  <div class="rate" id="rate-LTC">LTC: Loading...</div>
+  <div class="rate" id="rate-DOGE">DOGE: Loading...</div>
+  <div class="rate" id="rate-KAS">KAS: Loading...</div>
+</div>
+
+<!-- Toggle Button -->
+<button id="toggle-button">Hide</button>
+
 
   <div class="dashboard">
     <h1 class="glow">
@@ -370,21 +373,20 @@
           });
       });
 
-    // Toggle button functionality
     document.getElementById('toggle-button').addEventListener('click', () => {
-      const liveRates = document.getElementById('live-rates');
-      const toggleButton = document.getElementById('toggle-button');
+  const liveRates = document.getElementById('live-rates');
+  const toggleButton = document.getElementById('toggle-button');
 
-      if (liveRates.style.display === 'none') {
-        liveRates.style.display = 'block';
-        toggleButton.textContent = 'Hide';
-        toggleButton.classList.remove('shrink');
-      } else {
-        liveRates.style.display = 'none';
-        toggleButton.textContent = 'Show';
-        toggleButton.classList.add('shrink');
-      }
-    });
-  </script>
+  if (liveRates.style.display === 'none') {
+    liveRates.style.display = 'block';
+    toggleButton.textContent = 'Hide';
+    toggleButton.classList.remove('shrink');
+  } else {
+    liveRates.style.display = 'none';
+    toggleButton.textContent = 'Show';
+    toggleButton.classList.add('shrink');
+  }
+});
+</script>
 </body>
 </html>
