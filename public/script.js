@@ -127,29 +127,14 @@ fetch('/data.json')
     });
   });
 
-document.getElementById("toggle-button").addEventListener("click", function () {
-  const liveRates = document.getElementById("live-rates");
-  const toggleBtn = document.getElementById("toggle-button");
+document.getElementById('toggle-button').addEventListener('click', () => {
+  const liveRates = document.getElementById('live-rates');
+  const toggleButton = document.getElementById('toggle-button');
 
-  // If live rates box is currently hidden
-  if (liveRates.style.display === "none") {
-    liveRates.style.display = "block";  // Show the live rates box
-    toggleBtn.classList.remove("shrink");  // Remove shrink class to restore original button size
-    toggleBtn.textContent = "Hide";  // Change button text back to "Hide"
-    
-    // Remove position fixed so button stays inside the box
-    toggleBtn.style.position = "absolute";  
-    toggleBtn.style.top = "auto";  // Reset top positioning
-    toggleBtn.style.left = "auto";  // Reset left positioning
-  } else {
-    // If live rates box is currently visible
-    liveRates.style.display = "none";  // Hide the live rates box
-    toggleBtn.classList.add("shrink");  // Add shrink class to make the button smaller
-    toggleBtn.textContent = "Show";  // Change button text to "Show"
-    
-    // Move the button to the top left corner when hidden
-    toggleBtn.style.position = "fixed";
-    toggleBtn.style.top = "10px";
-    toggleBtn.style.left = "10px";
-  }
+  const isHidden = liveRates.style.display === 'none';
+
+  liveRates.style.display = isHidden ? 'block' : 'none';
+  toggleButton.textContent = isHidden ? 'Hide' : 'Show';
+  toggleButton.classList.toggle('shrink', !isHidden);
 });
+
