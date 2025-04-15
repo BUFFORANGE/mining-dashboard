@@ -135,9 +135,10 @@ canvas:hover {
     margin: 0 10px;
   }
 
+  /* Reduce font size of the title to free up vertical space */
   h1.glow {
-    font-size: 1.6rem; /* Smaller title */
-    margin-bottom: 1rem;
+    font-size: 1.4rem; /* Smaller title */
+    margin-bottom: 0.5rem; /* Reduce bottom margin for tighter layout */
   }
 
   #toggle-button.shrink {
@@ -176,10 +177,11 @@ canvas:hover {
     width: 100% !important;
     height: auto !important;
     margin: 1rem 0;
-    max-width: 100%; /* Ensure canvas is contained */
+    max-width: 100% !important; /* Ensure canvas stretches wider */
     display: block; /* Prevent inline-block behavior */
   }
 
+  /* Adjust the font sizes for total mined, percentage change, and daily ATH */
   #total-mined-today,
   #percentage-change,
   #daily-ath {
@@ -216,6 +218,7 @@ canvas:hover {
     max-width: 100% !important;
     height: auto !important;
     margin: 1rem 0;
+    width: 100% !important; /* Stretch the charts wider */
   }
 
   /* Handle canvas responsiveness better */
