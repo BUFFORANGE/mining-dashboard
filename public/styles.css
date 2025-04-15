@@ -58,3 +58,49 @@ canvas:hover {
   border: 5px solid #ff00ff;
   transform: scale(1.05);
 }
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  .dashboard {
+    padding: 1rem;
+    margin: 0 10px;
+  }
+
+  h1.glow {
+    font-size: 1.8rem;
+  }
+
+  #live-rates {
+    position: relative;
+    width: 100%;
+    left: auto;
+    top: auto;
+    margin: 0 auto 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 1rem;
+  }
+
+  .rate {
+    font-size: 1.2rem;
+  }
+
+  .live-prices-title {
+    font-size: 1.3rem;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  #total-mined-today,
+  #percentage-change,
+  #daily-ath {
+    font-size: 1.2rem;
+  }
+}
+
