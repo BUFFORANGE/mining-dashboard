@@ -135,10 +135,10 @@ canvas:hover {
     margin: 0 10px;
   }
 
-  /* Reduce font size of the title to free up vertical space */
+  /* Further reduce font size of the title to free up vertical space */
   h1.glow {
-    font-size: 1.4rem; /* Smaller title */
-    margin-bottom: 0.5rem; /* Reduce bottom margin for tighter layout */
+    font-size: 1.2rem; /* Even smaller title */
+    margin-bottom: 0.5rem; /* Reduce bottom margin to allow more space for the graphs */
   }
 
   #toggle-button.shrink {
@@ -173,10 +173,11 @@ canvas:hover {
     font-size: 1rem; /* Smaller text for each coin rate */
   }
 
+  /* Make canvas (graphs) take more vertical space and stretch wider */
   canvas {
     width: 100% !important;
-    height: auto !important;
-    margin: 1rem 0;
+    height: 400px !important; /* Give the canvas more height for more vertical space */
+    margin: 1.5rem 0;
     max-width: 100% !important; /* Ensure canvas stretches wider */
     display: block; /* Prevent inline-block behavior */
   }
@@ -213,11 +214,11 @@ canvas:hover {
     gap: 1rem;
   }
 
-  /* Adjust for charts so they don't get too big on small screens */
+  /* Increase vertical space between the title and the graphs */
   #usdChart, #coinChart {
     max-width: 100% !important;
-    height: auto !important;
-    margin: 1rem 0;
+    height: 400px !important; /* Increase height for the graphs */
+    margin: 2rem 0;
     width: 100% !important; /* Stretch the charts wider */
   }
 
