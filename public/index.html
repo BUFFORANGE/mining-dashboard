@@ -380,21 +380,13 @@
             }
           });
 
-          fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,litecoin,dogecoin,kaspa&vs_currencies=usd&include_24hr_change=true')
-  .then(res => res.json())
-  .then(prices => {
-    const formatChange = (change) => {
-      const rounded = change.toFixed(2);
-      return change >= 0 
-        ? `<span class="positive">(+${rounded}%)</span>`
-        : `<span class="negative">(${rounded}%)</span>`;
-    };
+          // Update Live Exchange Rates section
+          document.getElementById("rate-BTC").textContent = `BTC: $${rates.BTC.toFixed(2)}`;
+          document.getElementById("rate-LTC").textContent = `LTC: $${rates.LTC.toFixed(2)}`;
+          document.getElementById("rate-DOGE").textContent = `DOGE: $${rates.DOGE.toFixed(4)}`;
+          document.getElementById("rate-KAS").textContent = `KAS: $${rates.KAS.toFixed(4)}`;
 
-    document.getElementById("btc-rate").innerHTML = `BTC: $${prices.bitcoin.usd.toFixed(2)} ${formatChange(prices.bitcoin.usd_24h_change)}`;
-    document.getElementById("ltc-rate").innerHTML = `LTC: $${prices.litecoin.usd.toFixed(2)} ${formatChange(prices.litecoin.usd_24h_change)}`;
-    document.getElementById("doge-rate").innerHTML = `DOGE: $${prices.dogecoin.usd.toFixed(4)} ${formatChange(prices.dogecoin.usd_24h_change)}`;
-    document.getElementById("kas-rate").innerHTML = `KAS: $${prices.kaspa.usd.toFixed(5)} ${formatChange(prices.kaspa.usd_24h_change)}`;
-      });
+        });
     });
 </script>
 </body>
