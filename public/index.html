@@ -131,19 +131,50 @@
   position: fixed;
   top: 20px;
   left: 20px;
-  background: rgba(15, 15, 28, 0.8);
-  padding: 1rem;
-  border-radius: 10px;
+  background: rgba(15, 15, 28, 0.9);
+  padding: 1.5rem;
+  border-radius: 15px;
   z-index: 10;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #00fff7;
-  box-shadow: 0 0 10px #00fff7;
+  box-shadow: 0 0 15px #00fff7, 0 0 30px #00fff7;
+  backdrop-filter: blur(10px);
+  width: 250px;
+  text-align: center;
+  animation: glowBox 2s ease-in-out infinite alternate;
+}
+    
+/* Glowing animation for the box */
+@keyframes glowBox {
+  0% {
+    box-shadow: 0 0 10px #00fff7, 0 0 20px #00fff7;
+  }
+  50% {
+    box-shadow: 0 0 15px #00ffcc, 0 0 25px #00ffcc;
+  }
+  100% {
+    box-shadow: 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+  }
 }
 
 .rate {
-  margin: 5px 0;
+  margin: 10px 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-shadow: 0 0 5px #00fff7, 0 0 10px #00fff7;
 }
 
+.rate:hover {
+  color: #ff00ff;
+  cursor: pointer;
+}
+
+/* Subtle hover effect on each rate item */
+.rate:hover {
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+  transform: scale(1.05);
+}
+    
   </style>
 </head>
 <body>
