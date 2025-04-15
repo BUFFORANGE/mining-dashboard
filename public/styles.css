@@ -122,12 +122,9 @@ canvas:hover {
 }
 
 
-/* ===================== */
-/* 📱 Mobile Styling */
-/* ===================== */
 @media (max-width: 768px) {
   body {
-    padding: 0.5rem; /* Reduce body padding for smaller screens */
+    padding: 0.5rem;
   }
 
   .dashboard {
@@ -135,10 +132,10 @@ canvas:hover {
     margin: 0 10px;
   }
 
-  /* Further reduce font size of the title to free up vertical space */
+  /* ✂️ Reduce title size by another 25% */
   h1.glow {
-    font-size: 1.2rem; /* Even smaller title */
-    margin-bottom: 0.5rem; /* Reduce bottom margin to allow more space for the graphs */
+    font-size: 0.9rem; /* Was 1.2rem, now 25% smaller */
+    margin-bottom: 0.5rem;
   }
 
   #toggle-button.shrink {
@@ -161,75 +158,52 @@ canvas:hover {
     top: auto;
     margin: 0 auto 1rem;
     text-align: center;
-    font-size: 1rem; /* Smaller font size */
-    padding: 0.8rem; /* Less padding */
+    font-size: 1rem;
+    padding: 0.8rem;
   }
 
   .live-prices-title {
-    font-size: 1.1rem; /* Smaller title font size */
+    font-size: 1.1rem;
   }
 
   .rate {
-    font-size: 1rem; /* Smaller text for each coin rate */
+    font-size: 1rem;
   }
 
-  /* Make canvas (graphs) take more vertical space and stretch wider */
+  /* 🎯 Match graph widths & improve vertical spacing */
   canvas {
+    display: block;
     width: 100% !important;
-    height: 400px !important; /* Give the canvas more height for more vertical space */
-    margin: 1.5rem 0;
-    max-width: 100% !important; /* Ensure canvas stretches wider */
-    display: block; /* Prevent inline-block behavior */
+    max-width: 100% !important;
+    height: 360px !important; /* Adjusted to reduce stretch but still roomy */
+    margin: 1.5rem auto;
   }
 
-  /* Adjust the font sizes for total mined, percentage change, and daily ATH */
+  .mined-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
   #total-mined-today,
   #percentage-change,
   #daily-ath {
     font-size: 1rem;
-    margin-bottom: 0.5rem; /* Add some space between text elements */
+    margin-bottom: 0.5rem;
   }
 
   #update-time {
     font-size: 0.9rem;
   }
 
-  #usd-value {
+  #usd-value,
+  #percentage-change,
+  .positive,
+  .negative {
     font-size: 1.1rem;
   }
 
-  #percentage-change {
-    font-size: 1.1rem;
-  }
-
-  .positive, .negative {
-    font-size: 1.1rem;
-  }
-
-  /* Reduce the width of the "Total Mined" section to make it more mobile-friendly */
-  .mined-summary {
-    display: flex;
-    flex-direction: column; /* Stack the summary vertically */
-    align-items: center; /* Center align the items */
-    gap: 1rem;
-  }
-
-  /* Increase vertical space between the title and the graphs */
-  #usdChart, #coinChart {
-    max-width: 100% !important;
-    height: 400px !important; /* Increase height for the graphs */
-    margin: 2rem 0;
-    width: 100% !important; /* Stretch the charts wider */
-  }
-
-  /* Handle canvas responsiveness better */
-  .canvas-container {
-    width: 100%;
-    overflow: hidden;
-    max-width: 100%;
-  }
-
-  /* Adjust the footer and other elements for mobile */
   #daily-ath {
     font-size: 1.2rem;
     margin-top: 1rem;
