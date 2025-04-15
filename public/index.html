@@ -164,9 +164,32 @@
       text-shadow: 0 0 2px #ff00ff, 0 0 5px #ff00ff;
       transform: scale(1.05);
     }
+
+    /* Button to toggle visibility */
+    #toggle-rates-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #00fff7;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #toggle-rates-btn:hover {
+      background-color: #ff00ff;
+      color: #fff;
+      box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Button to toggle live rates visibility -->
+  <button id="toggle-rates-btn">Toggle Live Rates</button>
 
   <!-- Live Exchange Rates Box -->
   <div id="live-rates">
@@ -204,6 +227,12 @@
       const [month, day, year] = dateStr.split("-");
       return `${month}-${day}-${year}`;
     }
+
+    // Toggle live rates visibility
+    document.getElementById("toggle-rates-btn").addEventListener("click", function() {
+      const liveRatesBox = document.getElementById("live-rates");
+      liveRatesBox.style.display = liveRatesBox.style.display === "none" ? "block" : "none";
+    });
 
     // Fetch mining + price data
     fetch('data.json')
