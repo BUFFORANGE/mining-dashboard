@@ -165,31 +165,34 @@
       transform: scale(1.05);
     }
 
-    /* Button to toggle visibility */
-    #toggle-rates-btn {
+    #toggle-button {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #00fff7;
-      color: #000;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    #toggle-rates-btn:hover {
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       background-color: #ff00ff;
       color: #fff;
-      box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #toggle-button.shrink {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      width: 40px;
+      height: 40px;
+      padding: 5px;
+      border-radius: 50%;
+      font-size: 0.9rem;
+      transform: translateX(0);
     }
   </style>
 </head>
 <body>
-
-  <!-- Button to toggle live rates visibility -->
-  <button id="toggle-rates-btn">Toggle Live Rates</button>
 
   <!-- Live Exchange Rates Box -->
   <div id="live-rates">
@@ -198,6 +201,7 @@
     <div class="rate" id="rate-LTC">LTC: Loading...</div>
     <div class="rate" id="rate-DOGE">DOGE: Loading...</div>
     <div class="rate" id="rate-KAS">KAS: Loading...</div>
+    <button id="toggle-button">Hide</button>
   </div>
 
   <div class="dashboard">
@@ -227,12 +231,6 @@
       const [month, day, year] = dateStr.split("-");
       return `${month}-${day}-${year}`;
     }
-
-    // Toggle live rates visibility
-    document.getElementById("toggle-rates-btn").addEventListener("click", function() {
-      const liveRatesBox = document.getElementById("live-rates");
-      liveRatesBox.style.display = liveRatesBox.style.display === "none" ? "block" : "none";
-    });
 
     // Fetch mining + price data
     fetch('data.json')
@@ -371,6 +369,22 @@
             document.getElementById("rate-KAS").innerHTML = `KAS: $${rates.KAS.toFixed(5)} ${formatChange(prices.kaspa.usd_24h_change)}`;
           });
       });
+
+    // Toggle button functionality
+    document.getElementById('toggle-button').addEventListener('click', () => {
+      const liveRates = document.getElementById('live-rates');
+      const toggleButton = document.getElementById('toggle-button');
+
+      if (liveRates.style.display === 'none') {
+        liveRates.style.display = 'block';
+        toggleButton.textContent = 'Hide';
+        toggleButton.classList.remove('shrink');
+      } else {
+        liveRates.style.display = 'none';
+        toggleButton.textContent = 'Show';
+        toggleButton.classList.add('shrink');
+      }
+    });
   </script>
 </body>
 </html>
