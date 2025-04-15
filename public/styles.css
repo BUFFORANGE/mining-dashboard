@@ -127,7 +127,7 @@ canvas:hover {
 /* ===================== */
 @media (max-width: 768px) {
   body {
-    padding: 0.5rem; /* Reduce body padding */
+    padding: 0.5rem; /* Reduce body padding for smaller screens */
   }
 
   .dashboard {
@@ -139,20 +139,19 @@ canvas:hover {
     font-size: 1.6rem; /* Smaller title */
     margin-bottom: 1rem;
   }
-  
-  #toggle-button.shrink {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-  overflow: hidden;
-  white-space: nowrap;
-}
 
+  #toggle-button.shrink {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 
   #live-rates {
     position: relative;
@@ -177,12 +176,15 @@ canvas:hover {
     width: 100% !important;
     height: auto !important;
     margin: 1rem 0;
+    max-width: 100%; /* Ensure canvas is contained */
+    display: block; /* Prevent inline-block behavior */
   }
 
   #total-mined-today,
   #percentage-change,
   #daily-ath {
     font-size: 1rem;
+    margin-bottom: 0.5rem; /* Add some space between text elements */
   }
 
   #update-time {
@@ -199,5 +201,34 @@ canvas:hover {
 
   .positive, .negative {
     font-size: 1.1rem;
+  }
+
+  /* Reduce the width of the "Total Mined" section to make it more mobile-friendly */
+  .mined-summary {
+    display: flex;
+    flex-direction: column; /* Stack the summary vertically */
+    align-items: center; /* Center align the items */
+    gap: 1rem;
+  }
+
+  /* Adjust for charts so they don't get too big on small screens */
+  #usdChart, #coinChart {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 1rem 0;
+  }
+
+  /* Handle canvas responsiveness better */
+  .canvas-container {
+    width: 100%;
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  /* Adjust the footer and other elements for mobile */
+  #daily-ath {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
   }
 }
