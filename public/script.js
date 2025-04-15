@@ -1,9 +1,11 @@
 function calculatePercentageChange(current, previous) {
   return ((current - previous) / previous) * 100;
 }
+
 function getDominantPoints(data, threshold = 130) {
   return data.map(value => value >= threshold);
 }
+
 fetch('/data.json')
   .then(res => res.json())
   .then(data => {
@@ -16,18 +18,19 @@ fetch('/data.json')
     const latestUSD = usdData[usdData.length - 1];
     const previousUSD = usdData[usdData.length - 2];
     const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
-    document.getElementById("usd-value").textContent = $${latestUSD.toFixed(2)};
+    document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
     const pctElem = document.getElementById("percentage-change");
     if (latestPercentageChange > 0) {
-      pctElem.textContent = +${latestPercentageChange.toFixed(2)}%;
+      pctElem.textContent = `+${latestPercentageChange.toFixed(2)}%`;
       pctElem.classList.add("positive");
       pctElem.classList.remove("negative");
     } else {
-      pctElem.textContent = ${latestPercentageChange.toFixed(2)}%;
+      pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
       pctElem.classList.add("negative");
       pctElem.classList.remove("positive");
     }
-    document.getElementById("update-time").textContent = Updated: ${new Date().toLocaleString()};
+    document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
+
     new Chart(document.getElementById("usdChart"), {
       type: "line",
       data: {
@@ -66,6 +69,7 @@ fetch('/data.json')
         }
       }
     });
+
     new Chart(document.getElementById("coinChart"), {
       type: "bar",
       data: {
@@ -114,7 +118,7 @@ fetch('/data.json')
             ticks: {
               color: '#00fff7',
               callback: function(value) {
-                return $${value.toFixed(2)}; // Format the y-axis as USD
+                return `$${value.toFixed(2)}`; // Format the y-axis as USD
               }
             }
           }
@@ -122,3 +126,19 @@ fetch('/data.json')
       }
     });
   });
+
+// Toggle Hide/Show functionality for the live rates box
+document.getElementById("toggle-button").addEventListener("click", function () {
+  const liveRates = document.getElementById("live-rates");
+  const toggleBtn = document.getElementById("toggle-button");
+
+  if (liveRates.style.display === "none") {
+    liveRates.style.display = "block";
+    toggleBtn.classList.remove("shrink");
+    toggleBtn.textContent = "Hide";
+  } else {
+    liveRates.style.display = "none";
+    toggleBtn.classList.add("shrink");
+    toggleBtn.textContent = "Show";
+  }
+});
