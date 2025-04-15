@@ -166,9 +166,9 @@
     }
 
     #toggle-button {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
+  position: fixed;
+  top: 180px; /* or adjust based on your live box height */
+  left: 20px;
   background-color: #ff00ff;
   color: #fff;
   border: none;
@@ -176,19 +176,19 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 1000;
 }
 
+#toggle-button.shrink {
+  top: 10px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+}
 
-    #toggle-button.shrink {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      transform: none;
-      width: 60px;
-      height: 40px;
-      font-size: 1rem;
-      border-radius: 8px;
-    }
   </style>
 </head>
 <body>
