@@ -7,6 +7,7 @@ body {
   padding: 2rem;
   animation: glowFlicker 2s infinite alternate;
 }
+
 .dashboard {
   background: rgba(15, 15, 28, 0.6);
   backdrop-filter: blur(10px);
@@ -19,6 +20,7 @@ body {
   box-shadow: 0 0 15px #00fff720;
   animation: float 5s ease-in-out infinite;
 }
+
 h1.glow {
   text-align: center;
   color: #00fff7;
@@ -29,23 +31,28 @@ h1.glow {
   display: inline-block;
   animation: pulseGlow 3s ease-in-out infinite;
 }
+
 #usd-value { color: #00ff00; }
 .positive { color: #00ff00; }
 .negative { color: #ff0000; }
+
 @keyframes pulseGlow {
   0%, 100% { text-shadow: 0 0 1px #00fff7, 0 0 2px #00fff7; }
   50% { text-shadow: 0 0 0.5px #00fff7, 0 0 1px #00fff7; }
 }
+
 @keyframes glowFlicker {
   0% { background-color: rgba(15, 15, 28, 0.6); }
   50% { background-color: rgba(15, 15, 28, 0.7); }
   100% { background-color: rgba(15, 15, 28, 0.6); }
 }
+
 @keyframes float {
   0% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
   100% { transform: translateY(0); }
 }
+
 canvas {
   background-color: #1a1a2e;
   border: 5px solid #00fff7;
@@ -54,11 +61,51 @@ canvas {
   margin: 2rem 0;
   transition: all 0.3s ease-in-out;
 }
+
 canvas:hover {
   border: 5px solid #ff00ff;
   transform: scale(1.05);
 }
 
+/* ===================== */
+/* 🔘 Toggle Button Styles */
+/* ===================== */
+#toggle-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #111;
+  color: #00fff7;
+  border: 2px solid #00fff7;
+  border-radius: 8px;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 20;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+#toggle-button:hover {
+  background-color: #00fff7;
+  color: #000;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+}
+
+#toggle-button.shrink {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  transform: translateX(0);
+}
+
+/* ===================== */
+/* 📱 Mobile Styling */
+/* ===================== */
 @media (max-width: 768px) {
   body {
     padding: 0.5rem; /* Reduce body padding */
@@ -96,44 +143,28 @@ canvas:hover {
   canvas {
     width: 100% !important;
     height: auto !important;
+    margin: 1rem 0;
   }
 
   #total-mined-today,
   #percentage-change,
   #daily-ath {
-    font-size: 1rem; /* Smaller text */
+    font-size: 1rem;
   }
 
   #update-time {
-    font-size: 0.9rem; /* Slightly smaller update time */
+    font-size: 0.9rem;
   }
 
   #usd-value {
-    font-size: 1.1rem; /* Slightly smaller value font */
+    font-size: 1.1rem;
   }
 
   #percentage-change {
-    font-size: 1.1rem; /* Smaller percentage change font */
+    font-size: 1.1rem;
   }
 
   .positive, .negative {
-    font-size: 1.1rem; /* Smaller positive/negative change text */
+    font-size: 1.1rem;
   }
-
-  /* Smaller chart padding */
-  canvas {
-    margin: 1rem 0;
-  }
-  
-  #toggle-button.shrink {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  border-radius: 50%;
-  font-size: 0.9rem;
-  transform: translateX(0);
-}
 }
