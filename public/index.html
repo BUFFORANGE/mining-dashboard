@@ -167,7 +167,7 @@
 
     #toggle-button {
       position: absolute;
-      bottom: 20px;
+      bottom: -50px;
       left: 50%;
       transform: translateX(-50%);
       background-color: #ff00ff;
@@ -177,18 +177,18 @@
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
+      z-index: 1000;
     }
 
     #toggle-button.shrink {
       position: fixed;
       top: 10px;
       left: 10px;
-      width: 40px;
+      transform: none;
+      width: 60px;
       height: 40px;
-      padding: 5px;
-      border-radius: 50%;
-      font-size: 0.9rem;
-      transform: translateX(0);
+      font-size: 1rem;
+      border-radius: 8px;
     }
   </style>
 </head>
