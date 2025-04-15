@@ -70,9 +70,27 @@ canvas:hover {
 /* ===================== */
 /* 🔘 Toggle Button Styles */
 /* ===================== */
+#live-rates {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(15, 15, 28, 0.9);
+  padding: 1.5rem;
+  border-radius: 15px;
+  z-index: 10;
+  font-size: 1.5rem;
+  font-weight: 100;
+  color: #00fff7;
+  box-shadow: 0 0 15px #00fff7, 0 0 30px #00fff7;
+  backdrop-filter: blur(10px);
+  width: 250px;
+  text-align: center;
+  animation: glowBox 2s ease-in-out infinite alternate;
+}
+
 #toggle-button {
   position: absolute;
-  top: calc(100% + 10px); /* Places it below the box */
+  top: calc(100% + 10px); /* just below the box */
   left: 0;
   background-color: #111;
   color: #00fff7;
@@ -104,14 +122,6 @@ canvas:hover {
   max-height: 40px;
   overflow: hidden;
   white-space: nowrap;
-}
-
-#live-rates {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  /* your existing styles */
-  position: relative; /* <- ADD THIS if you haven't */
 }
 
 
