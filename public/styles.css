@@ -82,6 +82,11 @@ canvas:hover {
   cursor: pointer;
   z-index: 20;
   font-size: 1rem;
+  display: inline-block;
+  max-width: 100px;
+  max-height: 40px;
+  overflow: hidden;
+  white-space: nowrap;
   transition: all 0.3s ease;
 }
 
@@ -100,8 +105,12 @@ canvas:hover {
   padding: 5px;
   border-radius: 50%;
   font-size: 0.9rem;
-  transform: translateX(0);
+  max-width: 40px;
+  max-height: 40px;
+  overflow: hidden;
+  white-space: nowrap;
 }
+
 
 /* ===================== */
 /* 📱 Mobile Styling */
