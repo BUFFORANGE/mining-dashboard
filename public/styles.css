@@ -88,11 +88,12 @@ canvas:hover {
   animation: glowBox 2s ease-in-out infinite alternate;
 }
 
+/* Default state - when live-rates is visible */
 #toggle-button {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 999;
+  position: absolute;
+  bottom: -50px; /* Push it below the box */
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #ff00ff;
   color: #fff;
   border: none;
@@ -100,6 +101,7 @@ canvas:hover {
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 1000;
 }
 
 #toggle-button:hover {
@@ -108,11 +110,15 @@ canvas:hover {
   box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 }
 
-##toggle-button.shrink {
+/* Shrink style when box is hidden */
+#toggle-button.shrink {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  transform: none;
   width: 60px;
   height: 40px;
-  font-size: 0.9rem;
-  padding: 5px;
+  font-size: 1rem;
   border-radius: 8px;
 }
 
