@@ -143,6 +143,13 @@
   text-align: center;
   animation: glowBox 2s ease-in-out infinite alternate;
 }
+  .live-prices-title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ff00ff;
+  text-shadow: 0 0 5px #00fff7;
+}
     
 /* Glowing animation for the box */
 @keyframes glowBox {
@@ -180,6 +187,7 @@
 <body>
   <!-- Live Exchange Rates Box -->
   <div id="live-rates">
+    <h3 class="live-prices-title">Live Prices</h3>
     <div class="rate" id="rate-BTC">BTC: Loading...</div>
     <div class="rate" id="rate-LTC">LTC: Loading...</div>
     <div class="rate" id="rate-DOGE">DOGE: Loading...</div>
