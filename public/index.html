@@ -161,7 +161,7 @@
   margin: 10px 0;
   font-size: 1.4rem;
   font-weight: bold;
-  text-shadow: 0 0 2px #00fff7, 0 0 5px #00fff7;
+  text-shadow: 0 0 1px #00fff7, 0 0 3px #00fff7;
 }
 
 .rate:hover {
@@ -171,7 +171,7 @@
 
 /* Subtle hover effect on each rate item */
 .rate:hover {
-  text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+  text-shadow: 0 0 2px #ff00ff, 0 0 5px #ff00ff;
   transform: scale(1.05);
 }
     
@@ -374,8 +374,8 @@
           // Update Live Exchange Rates section
           document.getElementById("rate-BTC").textContent = `BTC: $${rates.BTC.toFixed(2)}`;
           document.getElementById("rate-LTC").textContent = `LTC: $${rates.LTC.toFixed(2)}`;
-          document.getElementById("rate-DOGE").textContent = `DOGE: $${rates.DOGE.toFixed(2)}`;
-          document.getElementById("rate-KAS").textContent = `KAS: $${rates.KAS.toFixed(2)}`;
+          document.getElementById("rate-DOGE").textContent = `DOGE: $${rates.DOGE.toFixed(4)}`;
+          document.getElementById("rate-KAS").textContent = `KAS: $${rates.KAS.toFixed(4)}`;
 
         });
     });
