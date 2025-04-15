@@ -89,17 +89,16 @@ canvas:hover {
 }
 
 #toggle-button {
-  position: absolute;
-  top: calc(100% + 10px); /* just below the box */
-  left: 0;
-  background-color: #111;
-  color: #00fff7;
-  border: 2px solid #00fff7;
-  border-radius: 8px;
-  padding: 5px 10px;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 999;
+  background-color: #ff00ff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
   cursor: pointer;
-  z-index: 20;
-  font-size: 1rem;
   transition: all 0.3s ease;
 }
 
@@ -109,19 +108,12 @@ canvas:hover {
   box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 }
 
-#toggle-button.shrink {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 40px;
+##toggle-button.shrink {
+  width: 60px;
   height: 40px;
-  padding: 5px;
-  border-radius: 50%;
   font-size: 0.9rem;
-  max-width: 40px;
-  max-height: 40px;
-  overflow: hidden;
-  white-space: nowrap;
+  padding: 5px;
+  border-radius: 8px;
 }
 
 
