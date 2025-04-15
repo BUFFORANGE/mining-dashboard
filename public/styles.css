@@ -91,8 +91,8 @@ canvas:hover {
 /* Default state - when live-rates is visible */
 #toggle-button {
   position: fixed;
-  top: 180px; /* or adjust based on your live box height */
-  left: 20px;
+  top: 360px; /* or adjust based on your live box height */
+  left: 180px;
   background-color: #ff00ff;
   color: #fff;
   border: none;
