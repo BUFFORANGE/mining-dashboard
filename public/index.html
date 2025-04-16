@@ -304,6 +304,30 @@
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, "rgba(0,255,247,0.3)");
             gradient.addColorStop(1, "rgba(0,0,0,0)");
+
+            let glowOffset = 0;
+
+const glowingLinePlugin = {
+  id: 'glowingLinePlugin',
+  beforeDatasetDraw(chart, args, options) {
+    const {ctx, chartArea, chartArea: {left, right}} = chart;
+    const dataset = chart.data.datasets[args.index];
+    const meta = chart.getDatasetMeta(args.index);
+
+    if (!meta.hidden && dataset.label === "USD Mined") {
+      const gradient = ctx.createLinearGradient(left, 0, right, 0);
+      glowOffset += 0.01;
+      const stop1 = Math.abs(Math.sin(glowOffset));
+      const stop2 = Math.abs(Math.sin(glowOffset + Math.PI / 2));
+
+      gradient.addColorStop(0, `rgba(0,255,247,${0.2 + stop1 * 0.3})`);
+      gradient.addColorStop(0.5, `rgba(255,0,255,${0.4 + stop2 * 0.3})`);
+      gradient.addColorStop(1, `rgba(0,255,247,${0.2 + stop1 * 0.3})`);
+
+      dataset.borderColor = gradient;
+    }
+  }
+};
           
             new Chart(document.getElementById("usdChart"), {
               type: "line",
@@ -363,11 +387,12 @@
                 legend: { labels: { color: '#00fff7' } }
               },
               scales: {
-                x: { ticks: { color: '#00fff7' } },
-                y: { ticks: { color: '#00fff7' } }
-               }
-            }
-        });
+      x: { ticks: { color: '#00fff7' } },
+      y: { ticks: { color: '#00fff7' } }
+    },
+    plugins: [glowingLinePlugin] // 👈 add it here
+  }
+});
 
             const usdCoinData = {
               BTC: data.map(d => (d.BTC || 0) * rates.BTC),
