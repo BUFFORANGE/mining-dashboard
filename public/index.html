@@ -297,44 +297,78 @@
             let athDay = data[maxIndex].date;
             document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
+            
+            
+            
+            const ctx = document.getElementById("usdChart").getContext("2d");
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, "rgba(0,255,247,0.3)");
+            gradient.addColorStop(1, "rgba(0,0,0,0)");
+          
             new Chart(document.getElementById("usdChart"), {
               type: "line",
               data: {
                 labels: data.map(d => d.date),
-                datasets: [{
-                  label: "USD Mined",
-                  data: usdData,
-                  borderColor: "#00fff7",
-                  backgroundColor: "rgba(0,255,247,0.2)",
-                  fill: true,
-                  pointStyle: 'circle',
-                  pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 8 : 4,
-                  pointHoverRadius: 10,
-                  pointBorderColor: "#00fff7",
-                  pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
-                }]
-              },
-              options: {
-                responsive: true,
-                plugins: {
-                  tooltip: {
-                    backgroundColor: '#111',
-                    titleColor: '#00fff7',
-                    bodyColor: '#00fff7',
-                    borderColor: '#00fff7',
-                    borderWidth: 1,
-                    titleFont: { size: 14 },
-                    bodyFont: { size: 18 },
-                    padding: 12
-                  },
-                  legend: { labels: { color: '#00fff7' } }
-                },
-                scales: {
-                  x: { ticks: { color: '#00fff7' } },
-                  y: { ticks: { color: '#00fff7' } }
+               datasets: [{
+                label: "USD Mined",
+                data: usdData,
+                borderColor: "#00fff7",
+                backgroundColor: gradient,
+                fill: true,
+                tension: 0.35, // ← this adds a smooth curve
+                pointRadius: 0, // hide most points
+                pointHoverRadius: 8,
+                pointHitRadius: 20,
+                pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
+              }]
+            },
+            plugins: [{
+              id: 'glowLine',
+              beforeDatasetDraw(chart, args, options) {
+                const {ctx} = chart;
+                const dataset = chart.data.datasets[args.index];
+                const meta = chart.getDatasetMeta(args.index);
+      
+                ctx.save();
+                ctx.shadowColor = dataset.borderColor || '#00fff7';
+                ctx.shadowBlur = 15;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = dataset.borderColor;
+                ctx.lineWidth = 2.5;
+
+                ctx.beginPath();
+                const points = meta.data;
+                for (let i = 0; i < points.length; i++) {
+                  const point = points[i];
+                  if (i === 0) ctx.moveTo(point.x, point.y);
+                  else ctx.lineTo(point.x, point.y);
                 }
+                ctx.stroke();
+                ctx.restore();
               }
-            });
+            }],
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  backgroundColor: '#111',
+                  titleColor: '#00fff7',
+                  bodyColor: '#00fff7',
+                  borderColor: '#00fff7',
+                  borderWidth: 1,
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 18 },
+                  padding: 12
+                },
+                legend: { labels: { color: '#00fff7' } }
+              },
+              scales: {
+                x: { ticks: { color: '#00fff7' } },
+                y: { ticks: { color: '#00fff7' } }
+               }
+            }
+        });
 
             const usdCoinData = {
               BTC: data.map(d => (d.BTC || 0) * rates.BTC),
