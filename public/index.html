@@ -315,9 +315,8 @@
                 borderColor: "#00fff7",
                 backgroundColor: gradient,
                 fill: true,
-                tension: 0.35, // ← this adds a smooth curve
-                pointRadius: 0, // hide most points
-                pointHoverRadius: 8,
+                pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 4 : 2,
+                pointHoverRadius: 6,
                 pointHitRadius: 20,
                 pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
               }]
