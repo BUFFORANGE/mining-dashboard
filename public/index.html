@@ -370,16 +370,25 @@
                   legend: { labels: { color: '#00fff7' } }
                 },
                 scales: {
-                  x: { ticks: { color: '#00fff7' } },
+                  x: { 
+                    ticks: { color: '#00fff7' } 
+                  },
                   y: {
+                    type: 'logarithmic',
                     ticks: {
                       color: '#00fff7',
-                      callback: val => `$${val}`
+                      callback: function (value) {
+                        if (value === 0) return '$0';
+                        return '$' + value.toLocaleString();
                     }
+                  },
+                  afterBuildTicks: function(scale) {
+                    return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
                   }
                 }
               }
-            });
+            }
+          });
 
             const formatChange = (change) => {
               const rounded = Math.abs(change).toFixed(2);
