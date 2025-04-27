@@ -6,7 +6,6 @@
   <title>Mining Dashboard Derp Outposts</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@1.0.1"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@100;200;300;400&display=swap" rel="stylesheet">
 
   <style>
@@ -372,46 +371,26 @@ const glowingLinePlugin = {
                 ctx.restore();
               }
             }],
-              options: {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        backgroundColor: '#111',
-        titleColor: '#00fff7',
-        bodyColor: '#00fff7',
-        borderColor: '#00fff7',
-        borderWidth: 1,
-        titleFont: { size: 14 },
-        bodyFont: { size: 18 },
-        padding: 12
-      },
-      legend: { labels: { color: '#00fff7' } }
-    },
-    scales: {
-      x: {
-        ticks: { color: '#00fff7' },
-        type: 'time',
-        time: {
-          unit: 'day',
-          tooltipFormat: 'll',
-        },
-        min: new Date().setDate(new Date().getDate() - 7), // Last 7 days
-        max: new Date() // Today
-      },
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  backgroundColor: '#111',
+                  titleColor: '#00fff7',
+                  bodyColor: '#00fff7',
+                  borderColor: '#00fff7',
+                  borderWidth: 1,
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 18 },
+                  padding: 12
+                },
+                legend: { labels: { color: '#00fff7' } }
+              },
+              scales: {
+      x: { ticks: { color: '#00fff7' } },
       y: { ticks: { color: '#00fff7' } }
     },
-    zoom: {
-      pan: {
-        enabled: true,
-        mode: 'xy',
-        speed: 10
-      },
-      zoom: {
-        enabled: true,
-        mode: 'xy',
-        speed: 0.1
-      }
-    }
+    plugins: [glowingLinePlugin] // 👈 add it here
   }
 });
 
