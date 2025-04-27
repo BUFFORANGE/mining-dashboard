@@ -200,6 +200,16 @@
       border-radius: 50%;
       font-size: 0.9rem;
     }
+
+    #usdChartContainer {
+    width: 100%;           /* Full width for the container */
+    overflow-x: auto;      /* Enable horizontal scrolling */
+    padding-bottom: 10px;  /* Adds space to the bottom */
+  }
+
+  #usdChart {
+    width: 200%;  /* Make the chart wider to enable scrolling */
+  }
   </style>
 </head>
 <body>
@@ -387,9 +397,27 @@ const glowingLinePlugin = {
                 legend: { labels: { color: '#00fff7' } }
               },
               scales: {
-      x: { ticks: { color: '#00fff7' } },
-      y: { ticks: { color: '#00fff7' } }
-    },
+  x: {
+    grid: { color: "rgba(0,255,247,0.2)" },
+    ticks: { color: "#00fff7" },
+    title: { color: "#00fff7" },
+    min: Math.max(0, usdData.length - 7),  // Limit the view to the last 7 days
+    max: usdData.length - 1,  // Show data up to the most recent day
+    overflow: "hidden",
+    offset: true,
+    display: 'auto',  // This ensures scroll is enabled if there's more data
+    position: "bottom",  // Position at the bottom of the chart
+    ticks: {
+      autoSkip: false,  // Prevents skipping of ticks so you can see every label on the x-axis
+      maxRotation: 0,  // Ensures labels are readable (no rotation)
+    }
+  },
+  y: {
+    grid: { color: "rgba(0,255,247,0.2)" },
+    ticks: { color: "#00fff7" },
+    title: { color: "#00fff7" }
+  }
+},
     plugins: [glowingLinePlugin] // 👈 add it here
   }
 });
