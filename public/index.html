@@ -6,6 +6,7 @@
   <title>Mining Dashboard Derp Outposts</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@100;200;300;400&display=swap" rel="stylesheet">
 
   <style>
@@ -372,25 +373,47 @@ const glowingLinePlugin = {
               }
             }],
             options: {
-              responsive: true,
-              plugins: {
-                tooltip: {
-                  backgroundColor: '#111',
-                  titleColor: '#00fff7',
-                  bodyColor: '#00fff7',
-                  borderColor: '#00fff7',
-                  borderWidth: 1,
-                  titleFont: { size: 14 },
-                  bodyFont: { size: 18 },
-                  padding: 12
-                },
-                legend: { labels: { color: '#00fff7' } }
-              },
-              scales: {
-      x: { ticks: { color: '#00fff7' } },
+    responsive: true,
+    plugins: {
+      tooltip: {
+        backgroundColor: '#111',
+        titleColor: '#00fff7',
+        bodyColor: '#00fff7',
+        borderColor: '#00fff7',
+        borderWidth: 1,
+        titleFont: { size: 14 },
+        bodyFont: { size: 18 },
+        padding: 12
+      },
+      legend: { labels: { color: '#00fff7' } }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#00fff7' },
+        type: 'time', // Use time scale for date-based data
+        time: {
+          unit: 'day', // Daily unit for scaling
+          tooltipFormat: 'll', // Format for tooltip display
+        },
+        min: new Date().setDate(new Date().getDate() - 7), // Start date 7 days ago
+        max: new Date() // Today's date
+      },
       y: { ticks: { color: '#00fff7' } }
     },
-    plugins: [glowingLinePlugin] // 👈 add it here
+    plugins: [glowingLinePlugin],
+    // Enable zoom and pan
+    zoom: {
+      pan: {
+        enabled: true,
+        mode: 'xy', // Enable pan in both X and Y axes
+        speed: 10
+      },
+      zoom: {
+        enabled: true,
+        mode: 'xy', // Zoom in both X and Y axes
+        speed: 0.1
+      }
+    }
   }
 });
 
