@@ -17,7 +17,7 @@
       padding: 2rem;
       animation: glowFlicker 2s infinite alternate;
     }
-
+ 
     .dashboard {
       background: rgba(15, 15, 28, 0.6);
       backdrop-filter: blur(10px);
@@ -114,17 +114,6 @@
       background-color: #00fff7;
       color: #000;
       box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-    }
-
-    #filter-dropdown {
-      background-color: transparent;
-      color: #00fff7;
-      border: 2px solid #00fff7;
-      padding: 10px;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 1rem;
     }
 
     .rocket {
@@ -226,7 +215,7 @@
   
   <!-- Toggle Button -->
   <button id="toggle-button">Hide</button>
-
+  
   <!-- Dashboard Content -->
   <div class="dashboard">
     <h1 class="glow">
@@ -246,25 +235,18 @@
       </div>
     </div>
 
-    <!-- Line Chart -->
     <canvas id="usdChart"></canvas>
-    
-    <!-- Bar Chart (with Logarithmic Scale) -->
-    <canvas id="coinChart"></canvas>
-
     <div id="daily-ath">Daily ATH: Loading...</div>
-
-    <!-- Filter Dropdown -->
-    <select id="filter-dropdown">
-      <option value="12">Last 12 Days</option>
-      <option value="30">Last 30 Days</option>
-      <option value="60">Last 60 Days</option>
-    </select>
+    <canvas id="coinChart"></canvas>
   </div>
 
   <script>
     function calculatePercentageChange(current, previous) {
       return ((current - previous) / previous) * 100;
+    }
+
+    function getDominantPoints(data, threshold = 130) {
+      return data.map(value => value >= threshold);
     }
 
     function formatDate(dateStr) {
@@ -285,79 +267,153 @@
               KAS: prices.kaspa.usd
             };
 
-            // Filter and display data
-            let usdData = data.map(d =>
+            const usdData = data.map(d =>
               (d.BTC || 0) * rates.BTC +
               (d.LTC || 0) * rates.LTC +
               (d.DOGE || 0) * rates.DOGE +
               (d.KAS || 0) * rates.KAS
             );
 
-            // Process weekly and total mined values
-            const totalMinedToday = usdData[usdData.length - 1];
-            const totalMinedWeekly = usdData.slice(-7).reduce((acc, val) => acc + val, 0);
+            const dominantPoints = getDominantPoints(usdData, 130);
 
-            // Get the latest percentage change
-            const percentageChange = calculatePercentageChange(totalMinedToday, usdData[usdData.length - 2]);
+            const latestUSD = usdData[usdData.length - 1];
+            const previousUSD = usdData[usdData.length - 2];
+            const latestPercentageChange = calculatePercentageChange(latestUSD, previousUSD);
 
-            // Display stats
-            document.getElementById("total-mined-today").innerHTML = `Latest Mined 24hrs: $${totalMinedToday.toFixed(2)}`;
-            document.getElementById("usd-value").textContent = `$${totalMinedToday.toFixed(2)}`;
-            document.getElementById("weekly-value").textContent = `$${totalMinedWeekly.toFixed(2)}`;
-            document.getElementById("percentage-change").textContent = `Change: ${percentageChange.toFixed(2)}%`;
+            document.getElementById("usd-value").textContent = `$${latestUSD.toFixed(2)}`;
+            const pctElem = document.getElementById("percentage-change");
+            pctElem.textContent = `${latestPercentageChange.toFixed(2)}%`;
+            pctElem.className = latestPercentageChange >= 0 ? "positive" : "negative";
 
-            // Update charts
+            // Weekly Total
+            const last7Days = usdData.slice(-7);
+            const totalWeekly = last7Days.reduce((a, b) => a + b, 0);
+            document.getElementById("weekly-value").textContent = `$${totalWeekly.toFixed(2)}`;
+
+            document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
+
+            let maxUSD = Math.max(...usdData);
+            let maxIndex = usdData.indexOf(maxUSD);
+            let athDay = data[maxIndex].date;
+            document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
+
+            
+            
+            
+            const ctx = document.getElementById("usdChart").getContext("2d");
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, "rgba(0,255,247,0.3)");
+            gradient.addColorStop(1, "rgba(0,0,0,0)");
+
+            let glowOffset = 0;
+
+const glowingLinePlugin = {
+  id: 'glowingLinePlugin',
+  beforeDatasetDraw(chart, args, options) {
+    const {ctx, chartArea, chartArea: {left, right}} = chart;
+    const dataset = chart.data.datasets[args.index];
+    const meta = chart.getDatasetMeta(args.index);
+
+    if (!meta.hidden && dataset.label === "USD Mined") {
+      const gradient = ctx.createLinearGradient(left, 0, right, 0);
+      glowOffset += 0.01;
+      const stop1 = Math.abs(Math.sin(glowOffset));
+      const stop2 = Math.abs(Math.sin(glowOffset + Math.PI / 2));
+
+      gradient.addColorStop(0, `rgba(0,255,247,${0.2 + stop1 * 0.3})`);
+      gradient.addColorStop(0.5, `rgba(255,0,255,${0.4 + stop2 * 0.3})`);
+      gradient.addColorStop(1, `rgba(0,255,247,${0.2 + stop1 * 0.3})`);
+
+      dataset.borderColor = gradient;
+    }
+  }
+};
+          
             new Chart(document.getElementById("usdChart"), {
               type: "line",
               data: {
-                labels: data.map(d => formatDate(d.date)),
-                datasets: [{
-                  label: "USD Value",
-                  data: usdData,
-                  borderColor: "#00fff7",
-                  fill: false,
-                  borderWidth: 2,
-                }]
-              },
-              options: {
-                responsive: true,
-                scales: {
-                  x: { ticks: { color: '#00fff7' } },
-                  y: { ticks: { color: '#00fff7', callback: (value) => '$' + value.toLocaleString() } }
-                }
-              }
-            });
+                labels: data.map(d => d.date),
+               datasets: [{
+                label: "USD Mined",
+                data: usdData,
+                borderColor: "#00fff7",
+                backgroundColor: gradient,
+                fill: true,
+                pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 4 : 2,
+                pointHoverRadius: 6,
+                pointHitRadius: 20,
+                pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
+              }]
+            },
+            plugins: [{
+              id: 'glowLine',
+              beforeDatasetDraw(chart, args, options) {
+                const {ctx} = chart;
+                const dataset = chart.data.datasets[args.index];
+                const meta = chart.getDatasetMeta(args.index);
+      
+                ctx.save();
+                ctx.shadowColor = dataset.borderColor || '#00fff7';
+                ctx.shadowBlur = 15;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = dataset.borderColor;
+                ctx.lineWidth = 2.5;
 
-            // Bar Chart (with Logarithmic Scale)
+                ctx.beginPath();
+                const points = meta.data;
+                for (let i = 0; i < points.length; i++) {
+                  const point = points[i];
+                  if (i === 0) ctx.moveTo(point.x, point.y);
+                  else ctx.lineTo(point.x, point.y);
+                }
+                ctx.stroke();
+                ctx.restore();
+              }
+            }],
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  backgroundColor: '#111',
+                  titleColor: '#00fff7',
+                  bodyColor: '#00fff7',
+                  borderColor: '#00fff7',
+                  borderWidth: 1,
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 18 },
+                  padding: 12
+                },
+                legend: { labels: { color: '#00fff7' } }
+              },
+              scales: {
+      x: { ticks: { color: '#00fff7' } },
+      y: { ticks: { color: '#00fff7' } }
+    },
+    plugins: [glowingLinePlugin] // 👈 add it here
+  }
+});
+
+            const usdCoinData = {
+              BTC: data.map(d => (d.BTC || 0) * rates.BTC),
+              LTC: data.map(d => (d.LTC || 0) * rates.LTC),
+              DOGE: data.map(d => (d.DOGE || 0) * rates.DOGE),
+              KAS: data.map(d => (d.KAS || 0) * rates.KAS)
+            };
+
             new Chart(document.getElementById("coinChart"), {
               type: "bar",
               data: {
                 labels: data.map(d => d.date),
                 datasets: [
-                  { label: "BTC (USD)", data: usdData.BTC, backgroundColor: "#FFA500" },
-                  { label: "LTC (USD)", data: usdData.LTC, backgroundColor: "#bebebe" },
-                  { label: "DOGE (USD)", data: usdData.DOGE, backgroundColor: "#D2B48C" },
-                  { label: "KAS (USD)", data: usdData.KAS, backgroundColor: "#4ad6ff" }
+                  { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
+                  { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
+                  { label: "DOGE (USD)", data: usdCoinData.DOGE, backgroundColor: "#D2B48C" },
+                  { label: "KAS (USD)", data: usdCoinData.KAS, backgroundColor: "#4ad6ff" }
                 ]
               },
               options: {
                 responsive: true,
-                scales: {
-                  x: { ticks: { color: '#00fff7' } },
-                  y: {
-                    type: 'logarithmic',
-                    ticks: {
-                      color: '#00fff7',
-                      callback: function(value) {
-                        if (value === 0) return '$0';
-                        return '$' + value.toLocaleString();
-                      }
-                    },
-                    afterBuildTicks: function(scale) {
-                      return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
-                    }
-                  }
-                },
                 plugins: {
                   tooltip: {
                     callbacks: {
@@ -370,11 +426,56 @@
                     borderWidth: 1
                   },
                   legend: { labels: { color: '#00fff7' } }
+                },
+                scales: {
+                  x: { 
+                    ticks: { color: '#00fff7' } 
+                  },
+                  y: {
+                    type: 'logarithmic',
+                    ticks: {
+                      color: '#00fff7',
+                      callback: function (value) {
+                        if (value === 0) return '$0';
+                        return '$' + value.toLocaleString();
+                    }
+                  },
+                  afterBuildTicks: function(scale) {
+                    return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
+                  }
                 }
               }
-            });
+            }
+          });
+
+            const formatChange = (change) => {
+              const rounded = Math.abs(change).toFixed(2);
+              return change >= 0
+                ? `<span class="positive">▲ ${rounded}%</span>`
+                : `<span class="negative">▼ ${rounded}%</span>`;
+            };
+
+            document.getElementById("rate-BTC").innerHTML = `BTC: $${rates.BTC.toFixed(2)} ${formatChange(prices.bitcoin.usd_24h_change)}`;
+            document.getElementById("rate-LTC").innerHTML = `LTC: $${rates.LTC.toFixed(2)} ${formatChange(prices.litecoin.usd_24h_change)}`;
+            document.getElementById("rate-DOGE").innerHTML = `DOGE: $${rates.DOGE.toFixed(4)} ${formatChange(prices.dogecoin.usd_24h_change)}`;
+            document.getElementById("rate-KAS").innerHTML = `KAS: $${rates.KAS.toFixed(5)} ${formatChange(prices.kaspa.usd_24h_change)}`;
           });
       });
+
+    document.getElementById('toggle-button').addEventListener('click', () => {
+      const liveRates = document.getElementById('live-rates');
+      const toggleButton = document.getElementById('toggle-button');
+
+      if (liveRates.style.display === 'none') {
+        liveRates.style.display = 'block';
+        toggleButton.textContent = 'Hide';
+        toggleButton.classList.remove('shrink');
+      } else {
+        liveRates.style.display = 'none';
+        toggleButton.textContent = 'Show';
+        toggleButton.classList.add('shrink');
+      }
+    });
   </script>
 </body>
 </html>
