@@ -273,21 +273,6 @@
               (d.DOGE || 0) * rates.DOGE +
               (d.KAS || 0) * rates.KAS
             );
-   
-            // Use the last 12 days of data by default
-          const last12Days = usdData.slice(-12);
-          const last12Dates = data.slice(-12).map(d => d.date);
-
-          // Update the line chart and bar chart
-          updateCharts(last12Dates, last12Days);
-
-
-          // Function to update charts with selected data range
-          function updateCharts(labels, data) {
-            const ctx = document.getElementById("usdChart").getContext("2d");
-            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, "rgba(0,255,247,0.3)");
-            gradient.addColorStop(1, "rgba(0,0,0,0)");
 
             const dominantPoints = getDominantPoints(usdData, 130);
 
@@ -311,6 +296,14 @@
             let maxIndex = usdData.indexOf(maxUSD);
             let athDay = data[maxIndex].date;
             document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
+
+            
+            
+            
+            const ctx = document.getElementById("usdChart").getContext("2d");
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, "rgba(0,255,247,0.3)");
+            gradient.addColorStop(1, "rgba(0,0,0,0)");
 
             let glowOffset = 0;
 
@@ -339,10 +332,10 @@ const glowingLinePlugin = {
             new Chart(document.getElementById("usdChart"), {
               type: "line",
               data: {
-                labels: labels,
+                labels: data.map(d => d.date),
                datasets: [{
                 label: "USD Mined",
-                data: data,
+                data: usdData,
                 borderColor: "#00fff7",
                 backgroundColor: gradient,
                 fill: true,
@@ -411,7 +404,7 @@ const glowingLinePlugin = {
             new Chart(document.getElementById("coinChart"), {
               type: "bar",
               data: {
-                labels: labels,
+                labels: data.map(d => d.date),
                 datasets: [
                   { label: "BTC (USD)", data: usdCoinData.BTC, backgroundColor: "#FFA500" },
                   { label: "LTC (USD)", data: usdCoinData.LTC, backgroundColor: "#bebebe" },
@@ -453,26 +446,6 @@ const glowingLinePlugin = {
                 }
               }
             }
-          });
-
- // Dropdown for selecting data range
-          const dateSelector = document.createElement("select");
-          dateSelector.style.fontSize = "1.2rem";
-          dateSelector.style.padding = "0.5rem";
-          dateSelector.style.marginTop = "1rem";
-          dateSelector.innerHTML = `
-            <option value="12">Last 12 days</option>
-            <option value="24">Last 24 days</option>
-            <option value="30">Last 30 days</option>
-          `;
-          document.querySelector(".dashboard").appendChild(dateSelector);
-
-          // Handle dropdown change
-          dateSelector.addEventListener("change", (e) => {
-            const days = parseInt(e.target.value, 10);
-            const selectedData = usdData.slice(-days);
-            const selectedDates = data.slice(-days).map(d => d.date);
-            updateCharts(selectedDates, selectedData);
           });
 
             const formatChange = (change) => {
