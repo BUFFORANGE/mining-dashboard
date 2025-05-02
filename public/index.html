@@ -470,25 +470,22 @@ const glowingLinePlugin = {
         ticks: { color: '#00fff7' }
       },
      y: {
-  type: 'logarithmic',
-  ticks: {
-    color: '#00fff7',
-    callback: function (value) {
-      // Show powers of 10 clearly
-      const remain = value / Math.pow(10, Math.floor(Math.log10(value)));
-      if (remain === 1 || remain === 2 || remain === 5) {
-        return '$' + value.toLocaleString();
-      }
-      return '';
-    }
-  },
-  afterBuildTicks: function (axis) {
-    // Custom tick generation for log scale
-    return axis.ticks;
-  }
-}
-  }
-});
+                    type: 'logarithmic',
+                    ticks: {
+                      color: '#00fff7',
+                      callback: function (value) {
+                        if (value === 0) return '$0';
+                        return '$' + value.toLocaleString();
+                    }
+                  },
+                  afterBuildTicks: function(scale) {
+                    return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
+                  }
+                }
+              }
+            }
+          });
+
 
 
             const formatChange = (change) => {
