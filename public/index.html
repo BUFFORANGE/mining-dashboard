@@ -401,6 +401,41 @@ const glowingLinePlugin = {
               KAS: data.map(d => (d.KAS || 0) * rates.KAS)
             };
 
+                
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // 1️⃣ Glow plugin goes here FIRST
+  Chart.register({
+    id: 'glowLines',
+    beforeDatasetDraw(chart, args) {
+      const { ctx } = chart;
+      const dataset = chart.data.datasets[args.index];
+
+      const blur = Chart.defaults.plugins.glowLines?.shadowBlur || 15;
+
+      ctx.save();
+      ctx.shadowColor = dataset.borderColor;
+      ctx.shadowBlur = blur;
+      ctx.lineWidth = 2;
+    },
+    afterDatasetDraw(chart, args) {
+      chart.ctx.restore();
+    }
+  });
+
+  // 2️⃣ Optional animation loop (for pulsing glow)
+  let glowBlur = 15;
+  let direction = 1;
+
+  setInterval(() => {
+    glowBlur += direction;
+    if (glowBlur > 25 || glowBlur < 10) direction *= -1;
+
+    Chart.defaults.plugins.glowLines = Chart.defaults.plugins.glowLines || {};
+    Chart.defaults.plugins.glowLines.shadowBlur = glowBlur;
+
+    coinChart.update('none');
+  }, 100);  
             new Chart(document.getElementById("coinChart"), {
   type: "line",
   data: {
