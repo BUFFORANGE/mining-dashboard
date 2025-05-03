@@ -297,24 +297,27 @@
             let athDay = data[maxIndex].date;
             document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
-// ✅ 1. Preload image once
 const bgImage = new Image();
 bgImage.src = 'logo.png';
-            
-           // ✅ 2. Background plugin (uses preloaded image)
+let imageLoaded = false;
+
+bgImage.onload = () => {
+  imageLoaded = true;
+};
+
 const backgroundImagePlugin = {
   id: 'backgroundImage',
   beforeDraw: (chart) => {
+    if (!imageLoaded) return;
+
     const {ctx, chartArea} = chart;
-
-    if (!bgImage.complete) return; // Wait until image is loaded
-
     ctx.save();
     ctx.globalAlpha = 0.1;
     ctx.drawImage(bgImage, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
     ctx.restore();
   }
 };
+
             
             
             const ctx = document.getElementById("usdChart").getContext("2d");
