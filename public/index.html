@@ -441,31 +441,6 @@ const glowingLinePlugin = {
     }
   });
             
-const backgroundImagePlugin = {
-  id: 'backgroundImage',
-  beforeDraw: (chart) => {
-    const { ctx, chartArea } = chart;
-    const image = new Image();
-    image.src = '/logo.png'; // Path to your image
-
-    // Check if the image is already loaded
-    if (image.complete) {
-      ctx.save();
-      ctx.globalAlpha = 0.1; // Adjust transparency
-      ctx.drawImage(image, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
-      ctx.restore();
-    } else {
-      image.onload = () => {
-        ctx.save();
-        ctx.globalAlpha = 0.1;
-        ctx.drawImage(image, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
-        ctx.restore();
-      };
-    }
-  }
-};       
-     
-            
 
   // 2️⃣ Optional animation loop (for pulsing glow)
   let glowBlur = 15;
