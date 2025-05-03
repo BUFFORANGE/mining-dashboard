@@ -123,6 +123,14 @@
       color: #00fff7;
     }
 
+    #floor-price {
+  color: #00fff7;
+  font-size: 18px;
+  text-shadow: 0 0 6px #00fff7, 0 0 10px #00fff7;
+  margin-top: 10px;
+}
+
+
     canvas {
       background-color: #1a1a2e;
       border: 5px solid #00fff7;
@@ -259,9 +267,9 @@
   <div class="header-buttons">
     <a href="https://www.jpg.store/collection/derpbirdsoutposts?tab=items" class="header-btn" target="_blank">Buy Outposts</a>
     <a href="https://goldrush.derpbirds.io/outposts" class="header-btn" target="_blank">View Outposts</a>
+    <div id="floor-price" class="glow">Floor: Loading...</div>
   </div>
 </div>
-
 
     <p id="update-time">Loading...</p>
 
@@ -293,7 +301,19 @@
       const [month, day, year] = dateStr.split("-");
       return `${month}-${day}-${year}`;
     }
+    
+fetch("https://server.jpgstoreapis.com/collection/derpbirdsoutposts/stats")
+  .then(res => res.json())
+  .then(data => {
+    const floor = (data.floorPrice / 1_000_000).toFixed(2); // Convert from lovelace to ADA
+    document.getElementById("floor-price").textContent = `Floor: ₳${floor}`;
+  })
+  .catch(err => {
+    console.error("Failed to fetch floor price:", err);
+    document.getElementById("floor-price").textContent = "Floor: Unavailable";
+  });
 
+    
     fetch('data.json')
       .then(res => res.json())
       .then(data => {
