@@ -297,27 +297,7 @@
             let athDay = data[maxIndex].date;
             document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
-const bgImage = new Image();
-bgImage.src = '/logo.png';
-let imageLoaded = false;
-
-bgImage.onload = () => {
-  imageLoaded = true;
-};
-
-const backgroundImagePlugin = {
-  id: 'backgroundImage',
-  beforeDraw: (chart) => {
-    if (!imageLoaded) return;
-
-    const {ctx, chartArea} = chart;
-    ctx.save();
-    ctx.globalAlpha = 0.1;
-    ctx.drawImage(bgImage, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
-    ctx.restore();
-  }
-};
-
+            
             
             
             const ctx = document.getElementById("usdChart").getContext("2d");
@@ -326,7 +306,6 @@ const backgroundImagePlugin = {
             gradient.addColorStop(1, "rgba(0,0,0,0)");
 
             let glowOffset = 0;
-     
 
 const glowingLinePlugin = {
   id: 'glowingLinePlugin',
@@ -350,71 +329,70 @@ const glowingLinePlugin = {
   }
 };
           
-           new Chart(document.getElementById("usdChart"), {
-  type: "line",
-  data: {
-    labels: data.map(d => d.date),
-    datasets: [{
-      label: "USD Mined",
-      data: usdData,
-      borderColor: "#00fff7",
-      backgroundColor: gradient,
-      fill: true,
-      pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 4 : 2,
-      pointHoverRadius: 6,
-      pointHitRadius: 20,
-      pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
-    }]
-  },
-  // ✅ 3. Plugin array goes at top level (not inside options)
-  plugins: [glowingLinePlugin, backgroundImagePlugin, {
-    id: 'glowLine',
-    beforeDatasetDraw(chart, args) {
-      const {ctx} = chart;
-      const dataset = chart.data.datasets[args.index];
-      const meta = chart.getDatasetMeta(args.index);
+            new Chart(document.getElementById("usdChart"), {
+              type: "line",
+              data: {
+                labels: data.map(d => d.date),
+               datasets: [{
+                label: "USD Mined",
+                data: usdData,
+                borderColor: "#00fff7",
+                backgroundColor: gradient,
+                fill: true,
+                pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 4 : 2,
+                pointHoverRadius: 6,
+                pointHitRadius: 20,
+                pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
+              }]
+            },
+            plugins: [{
+              id: 'glowLine',
+              beforeDatasetDraw(chart, args, options) {
+                const {ctx} = chart;
+                const dataset = chart.data.datasets[args.index];
+                const meta = chart.getDatasetMeta(args.index);
+      
+                ctx.save();
+                ctx.shadowColor = dataset.borderColor || '#00fff7';
+                ctx.shadowBlur = 15;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = dataset.borderColor;
+                ctx.lineWidth = 2.5;
 
-      ctx.save();
-      ctx.shadowColor = dataset.borderColor || '#00fff7';
-      ctx.shadowBlur = 15;
-      ctx.lineJoin = 'round';
-      ctx.lineCap = 'round';
-      ctx.strokeStyle = dataset.borderColor;
-      ctx.lineWidth = 2.5;
-
-      ctx.beginPath();
-      const points = meta.data;
-      for (let i = 0; i < points.length; i++) {
-        const point = points[i];
-        if (i === 0) ctx.moveTo(point.x, point.y);
-        else ctx.lineTo(point.x, point.y);
-      }
-      ctx.stroke();
-      ctx.restore();
-    }
-  }],
-  options: {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        backgroundColor: '#111',
-        titleColor: '#00fff7',
-        bodyColor: '#00fff7',
-        borderColor: '#00fff7',
-        borderWidth: 1,
-        titleFont: { size: 14 },
-        bodyFont: { size: 18 },
-        padding: 12
-      },
-      legend: { labels: { color: '#00fff7' } }
-    },
-    scales: {
+                ctx.beginPath();
+                const points = meta.data;
+                for (let i = 0; i < points.length; i++) {
+                  const point = points[i];
+                  if (i === 0) ctx.moveTo(point.x, point.y);
+                  else ctx.lineTo(point.x, point.y);
+                }
+                ctx.stroke();
+                ctx.restore();
+              }
+            }],
+            options: {
+              responsive: true,
+              plugins: {
+                tooltip: {
+                  backgroundColor: '#111',
+                  titleColor: '#00fff7',
+                  bodyColor: '#00fff7',
+                  borderColor: '#00fff7',
+                  borderWidth: 1,
+                  titleFont: { size: 14 },
+                  bodyFont: { size: 18 },
+                  padding: 12
+                },
+                legend: { labels: { color: '#00fff7' } }
+              },
+              scales: {
       x: { ticks: { color: '#00fff7' } },
       y: { ticks: { color: '#00fff7' } }
-    }
+    },
+    plugins: [glowingLinePlugin] // 👈 add it here
   }
 });
-
 
             const usdCoinData = {
               BTC: data.map(d => (d.BTC || 0) * rates.BTC),
