@@ -435,22 +435,25 @@ const glowingLinePlugin = {
   }, 100);
 
             
+// ✅ Preload image once
 const watermarkImage = new Image();
-watermarkImage.src = 'logo.png'; // Make sure this path is correct
+watermarkImage.src = 'logo.png'; // Change path if needed
 
+// ✅ Register watermark plugin
 Chart.register({
   id: 'watermarkBackground',
   beforeDraw: (chart) => {
     const ctx = chart.ctx;
     const { width, height } = chart;
 
-    if (!watermarkImage.complete) return; // skip draw if image isn't ready
+    // Only draw if the image is fully loaded
+    if (!watermarkImage.complete) return;
 
     const imgWidth = width * 0.3;
     const imgHeight = imgWidth * (watermarkImage.height / watermarkImage.width);
 
     ctx.save();
-    ctx.globalAlpha = 0.08;
+    ctx.globalAlpha = 0.08; // watermark transparency
     ctx.drawImage(
       watermarkImage,
       (width - imgWidth) / 2,
@@ -461,6 +464,7 @@ Chart.register({
     ctx.restore();
   }
 });
+
 
 
             
