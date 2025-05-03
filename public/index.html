@@ -328,6 +328,14 @@ const glowingLinePlugin = {
     }
   }
 };
+
+            const ctx = document.getElementById("usdChart").getContext("2d");
+
+// Load the background image
+const img = new Image();
+img.src = 'logo.png'; // Replace with your image path
+
+img.onload = function () {
           
             new Chart(document.getElementById("usdChart"), {
               type: "line",
@@ -390,9 +398,20 @@ const glowingLinePlugin = {
       x: { ticks: { color: '#00fff7' } },
       y: { ticks: { color: '#00fff7' } }
     },
-    plugins: [glowingLinePlugin] // 👈 add it here
-  }
-});
+    plugins: [
+  {
+    beforeDraw: function(chart) {
+      const { ctx, chartArea } = chart;
+      ctx.save();
+      ctx.drawImage(img, chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+      ctx.restore();
+    }
+  },
+  glowingLinePlugin // 👈 add it here
+]
+}
+  });
+};
 
             const usdCoinData = {
               BTC: data.map(d => (d.BTC || 0) * rates.BTC),
@@ -434,39 +453,7 @@ const glowingLinePlugin = {
     coinChart.update('none');
   }, 100);
 
-           // Preload your watermark image
-const watermarkImage = new Image();
-watermarkImage.src = 'logo.png';  // Path to your watermark image
-
-// This ensures the chart won't draw before the image is loaded
-watermarkImage.onload = () => {
-  // Register watermark plugin for the background of the chart
-  Chart.register({
-    id: 'watermarkBackground',
-    beforeDraw: (chart) => {
-      const ctx = chart.ctx;
-      const { width, height } = chart;
-
-      ctx.save();
-      ctx.globalAlpha = 0.08;  // Adjust transparency as needed
-      const imgWidth = width * 0.3;  // Watermark width as percentage of chart width
-      const imgHeight = imgWidth * (watermarkImage.height / watermarkImage.width);  // Scale to keep ratio
-
-      ctx.drawImage(
-        watermarkImage,
-        (width - imgWidth) / 2,  // Center the image horizontally
-        (height - imgHeight) / 2,  // Center the image vertically
-        imgWidth,
-        imgHeight
-      );
-      ctx.restore();
-    }
-  });
-
-  // After the image is preloaded, create your chart with the watermark applied.
-  createChart();
-};
-
+           
 // Function to create the chart
 function createChart() {
   new Chart(document.getElementById("coinChart"), {
