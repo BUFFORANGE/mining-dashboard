@@ -359,7 +359,9 @@ const glowingLinePlugin = {
       data: usdData,
       borderColor: "#00fff7",
       backgroundColor: gradient,
-      fill: true,
+      fill: {
+  target: 'origin',
+  above: 'rgba(0,255,247,0.3)', // instead of a solid color
       pointRadius: ctx => dominantPoints[ctx.dataIndex] ? 4 : 2,
       pointHoverRadius: 6,
       pointHitRadius: 20,
