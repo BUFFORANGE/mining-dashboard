@@ -302,17 +302,24 @@
   beforeDraw: (chart) => {
     const { ctx, chartArea } = chart;
     const image = new Image();
-    image.src = '/logo.png';  // Make sure this path is correct based on where the image is in your repo
+    image.src = '/logo.png'; // Path to your image
 
-    image.onload = () => {
+    // Check if the image is already loaded
+    if (image.complete) {
       ctx.save();
-      ctx.globalAlpha = 0.1;  // Adjust transparency to blend with the chart
+      ctx.globalAlpha = 0.1; // Adjust transparency
       ctx.drawImage(image, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
       ctx.restore();
-    };
+    } else {
+      image.onload = () => {
+        ctx.save();
+        ctx.globalAlpha = 0.1;
+        ctx.drawImage(image, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+        ctx.restore();
+      };
+    }
   }
-};      
-            
+};       
             
             const ctx = document.getElementById("usdChart").getContext("2d");
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
