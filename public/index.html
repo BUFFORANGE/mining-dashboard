@@ -434,40 +434,42 @@ const glowingLinePlugin = {
     coinChart.update('none');
   }, 100);
 
-            Chart.register({
-  id: 'watermarkBackground',
-  beforeDraw(chart) {
-    const ctx = chart.ctx;
-    const { width, height } = chart;
+           // Preload your watermark image
+const watermarkImage = new Image();
+watermarkImage.src = 'logo.png';  // Path to your watermark image
 
-    if (!chart._watermarkImage) return;
+// This ensures the chart won't draw before the image is loaded
+watermarkImage.onload = () => {
+  // Register watermark plugin for the background of the chart
+  Chart.register({
+    id: 'watermarkBackground',
+    beforeDraw: (chart) => {
+      const ctx = chart.ctx;
+      const { width, height } = chart;
 
-    const image = chart._watermarkImage;
-    const imgWidth = width * 0.3;
-    const imgHeight = imgWidth * (image.height / image.width);
+      ctx.save();
+      ctx.globalAlpha = 0.08;  // Adjust transparency as needed
+      const imgWidth = width * 0.3;  // Watermark width as percentage of chart width
+      const imgHeight = imgWidth * (watermarkImage.height / watermarkImage.width);  // Scale to keep ratio
 
-    ctx.save();
-    ctx.globalAlpha = 0.08; // subtle transparency
-    ctx.drawImage(
-      image,
-      (width - imgWidth) / 2,
-      (height - imgHeight) / 2,
-      imgWidth,
-      imgHeight
-    );
-    ctx.restore();
-  }
-});
+      ctx.drawImage(
+        watermarkImage,
+        (width - imgWidth) / 2,  // Center the image horizontally
+        (height - imgHeight) / 2,  // Center the image vertically
+        imgWidth,
+        imgHeight
+      );
+      ctx.restore();
+    }
+  });
 
+  // After the image is preloaded, create your chart with the watermark applied.
+  createChart();
+};
 
-     const image = new Image();
-image.src = 'logo.png'; // Make sure this file is in the same public folder
-
-image.onload = () => {
-  const ctx = document.getElementById("coinChart").getContext("2d");
-
-  // Attach image to chart instance via global variable
-  const coinChart = new Chart(ctx, {
+// Function to create the chart
+function createChart() {
+  new Chart(document.getElementById("coinChart"), {
     type: "line",
     data: {
       labels: data.map(d => d.date),
@@ -532,29 +534,26 @@ image.onload = () => {
         }
       },
       scales: {
-        x: { ticks: { color: '#00fff7' } },
+        x: {
+          ticks: { color: '#00fff7' }
+        },
         y: {
           type: 'logarithmic',
           ticks: {
             color: '#00fff7',
-            callback(value) {
+            callback: function (value) {
               if (value === 0) return '$0';
               return '$' + value.toLocaleString();
             }
           },
-          afterBuildTicks(scale) {
+          afterBuildTicks: function(scale) {
             return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
           }
         }
       }
-    },
-    plugins: [{
-      beforeInit(chart) {
-        chart._watermarkImage = image;
-      }
-    }]
+    }
   });
-};
+}
 
 
 
