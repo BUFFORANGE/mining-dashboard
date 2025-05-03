@@ -434,91 +434,127 @@ const glowingLinePlugin = {
     coinChart.update('none');
   }, 100);
 
-            
-            new Chart(document.getElementById("coinChart"), {
-  type: "line",
-  data: {
-    labels: data.map(d => d.date),
-    datasets: [
-      {
-        label: "BTC (USD)",
-        data: usdCoinData.BTC,
-        borderColor: "#FFA500",
-        backgroundColor: "rgba(255,165,0,0.2)",
-        fill: false,
-        tension: 0.3,
-        pointRadius: 3,
-        pointHoverRadius: 6
+            Chart.register({
+  id: 'watermarkBackground',
+  beforeDraw(chart) {
+    const ctx = chart.ctx;
+    const { width, height } = chart;
+
+    if (!chart._watermarkImage) return;
+
+    const image = chart._watermarkImage;
+    const imgWidth = width * 0.3;
+    const imgHeight = imgWidth * (image.height / image.width);
+
+    ctx.save();
+    ctx.globalAlpha = 0.08; // subtle transparency
+    ctx.drawImage(
+      image,
+      (width - imgWidth) / 2,
+      (height - imgHeight) / 2,
+      imgWidth,
+      imgHeight
+    );
+    ctx.restore();
+  }
+});
+
+
+     const image = new Image();
+image.src = 'logo.png'; // Make sure this file is in the same public folder
+
+image.onload = () => {
+  const ctx = document.getElementById("coinChart").getContext("2d");
+
+  // Attach image to chart instance via global variable
+  const coinChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: data.map(d => d.date),
+      datasets: [
+        {
+          label: "BTC (USD)",
+          data: usdCoinData.BTC,
+          borderColor: "#FFA500",
+          backgroundColor: "rgba(255,165,0,0.2)",
+          fill: false,
+          tension: 0.3,
+          pointRadius: 3,
+          pointHoverRadius: 6
+        },
+        {
+          label: "LTC (USD)",
+          data: usdCoinData.LTC,
+          borderColor: "#00BFFF",
+          backgroundColor: "rgba(0,191,255,0.2)",
+          fill: false,
+          tension: 0.3,
+          pointRadius: 3,
+          pointHoverRadius: 6
+        },
+        {
+          label: "DOGE (USD)",
+          data: usdCoinData.DOGE,
+          borderColor: "#FF69B4",
+          backgroundColor: "rgba(255,105,180,0.2)",
+          fill: false,
+          tension: 0.3,
+          pointRadius: 3,
+          pointHoverRadius: 6
+        },
+        {
+          label: "KAS (USD)",
+          data: usdCoinData.KAS,
+          borderColor: "#7FFF00",
+          backgroundColor: "rgba(127,255,0,0.2)",
+          fill: false,
+          tension: 0.3,
+          pointRadius: 3,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          backgroundColor: '#111',
+          titleColor: '#00fff7',
+          bodyColor: '#00fff7',
+          borderColor: '#00fff7',
+          borderWidth: 1,
+          titleFont: { size: 14 },
+          bodyFont: { size: 16 },
+          padding: 10
+        },
+        legend: {
+          labels: { color: '#00fff7' }
+        }
       },
-      {
-        label: "LTC (USD)",
-        data: usdCoinData.LTC,
-        borderColor: "#00BFFF",
-        backgroundColor: "rgba(0,191,255,0.2)",
-        fill: false,
-        tension: 0.3,
-        pointRadius: 3,
-        pointHoverRadius: 6
-      },
-      {
-        label: "DOGE (USD)",
-        data: usdCoinData.DOGE,
-        borderColor: "#FF69B4",
-        backgroundColor: "rgba(255,105,180,0.2)",
-        fill: false,
-        tension: 0.3,
-        pointRadius: 3,
-        pointHoverRadius: 6
-      },
-      {
-        label: "KAS (USD)",
-        data: usdCoinData.KAS,
-        borderColor: "#7FFF00",
-        backgroundColor: "rgba(127,255,0,0.2)",
-        fill: false,
-        tension: 0.3,
-        pointRadius: 3,
-        pointHoverRadius: 6
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      tooltip: {
-        backgroundColor: '#111',
-        titleColor: '#00fff7',
-        bodyColor: '#00fff7',
-        borderColor: '#00fff7',
-        borderWidth: 1,
-        titleFont: { size: 14 },
-        bodyFont: { size: 16 },
-        padding: 10
-      },
-      legend: {
-        labels: { color: '#00fff7' }
+      scales: {
+        x: { ticks: { color: '#00fff7' } },
+        y: {
+          type: 'logarithmic',
+          ticks: {
+            color: '#00fff7',
+            callback(value) {
+              if (value === 0) return '$0';
+              return '$' + value.toLocaleString();
+            }
+          },
+          afterBuildTicks(scale) {
+            return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
+          }
+        }
       }
     },
-    scales: {
-      x: {
-        ticks: { color: '#00fff7' }
-      },
-     y: {
-                    type: 'logarithmic',
-                    ticks: {
-                      color: '#00fff7',
-                      callback: function (value) {
-                        if (value === 0) return '$0';
-                        return '$' + value.toLocaleString();
-                    }
-                  },
-                  afterBuildTicks: function(scale) {
-                    return scale.ticks.filter(tick => Number.isInteger(Math.log10(tick.value)));
-                  }
-                }
-              }
-            }
-          });
+    plugins: [{
+      beforeInit(chart) {
+        chart._watermarkImage = image;
+      }
+    }]
+  });
+};
 
 
 
