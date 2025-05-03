@@ -41,7 +41,37 @@
       display: inline-block;
       animation: pulseGlow 3s ease-in-out infinite;
     }
+    
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
 
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.header-btn {
+  padding: 8px 14px;
+  background: rgba(0, 255, 247, 0.15);
+  border: 1px solid #00fff7;
+  color: #00fff7;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  text-shadow: 0 0 5px #00fff7;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.header-btn:hover {
+  background: rgba(0, 255, 247, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00fff7;
+}
+  
     #update-time {
       color: #00fff7;
       font-size: 0.9rem;
@@ -218,10 +248,17 @@
   
   <!-- Dashboard Content -->
   <div class="dashboard">
-    <h1 class="glow">
-      <span class="title-main">⛏️ Mining Dashboard</span><br>
-      <span class="title-sub">Derp Outposts</span>
-    </h1>
+    <div class="header-container">
+  <h1 class="glow">
+    <span class="title-main">⛏️ Mining Dashboard</span><br>
+    <span class="title-sub">Derp Outposts</span>
+  </h1>
+  <div class="header-buttons">
+    <a href="https://www.jpg.store/collection/derpbirdsoutposts?tab=items" class="header-btn" target="_blank">Buy Outposts</a>
+    <a href="https://goldrush.derpbirds.io/outposts" class="header-btn" target="_blank">View Outposts</a>
+  </div>
+</div>
+
 
     <p id="update-time">Loading...</p>
 
