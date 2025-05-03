@@ -297,7 +297,21 @@
             let athDay = data[maxIndex].date;
             document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
-            
+      const backgroundImagePlugin = {
+  id: 'backgroundImage',
+  beforeDraw: (chart) => {
+    const { ctx, chartArea } = chart;
+    const image = new Image();
+    image.src = '/logo.png';  // Make sure this path is correct based on where the image is in your repo
+
+    image.onload = () => {
+      ctx.save();
+      ctx.globalAlpha = 0.1;  // Adjust transparency to blend with the chart
+      ctx.drawImage(image, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+      ctx.restore();
+    };
+  }
+};      
             
             
             const ctx = document.getElementById("usdChart").getContext("2d");
@@ -345,7 +359,7 @@ const glowingLinePlugin = {
                 pointBackgroundColor: ctx => dominantPoints[ctx.dataIndex] ? "#ff00ff" : "#00fff7"
               }]
             },
-            plugins: [{
+            plugins: [glowingLinePlugin, backgroundImagePlugin, {
               id: 'glowLine',
               beforeDatasetDraw(chart, args, options) {
                 const {ctx} = chart;
