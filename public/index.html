@@ -297,7 +297,22 @@
             let athDay = data[maxIndex].date;
             document.getElementById("daily-ath").innerHTML = `<span class="rocket">🚀</span> Daily ATH: <span style="color: #00ff00;">$${maxUSD.toFixed(2)}</span> on ${formatDate(athDay)}`;
 
-            
+            const backgroundImagePlugin = {
+  id: 'backgroundImage',
+  beforeDraw: (chart) => {
+    const {ctx, chartArea} = chart;
+    const image = new Image();
+    image.src = 'logo.png';
+
+    image.onload = () => {
+      ctx.save();
+      ctx.globalAlpha = 0.1; // adjust transparency
+      ctx.drawImage(image, chartArea.left, chartArea.top, chartArea.width, chartArea.height);
+      ctx.restore();
+      chart.draw(); // redraw chart after image loads
+    };
+  }
+};
             
             
             const ctx = document.getElementById("usdChart").getContext("2d");
@@ -390,7 +405,8 @@ const glowingLinePlugin = {
       x: { ticks: { color: '#00fff7' } },
       y: { ticks: { color: '#00fff7' } }
     },
-    plugins: [glowingLinePlugin] // 👈 add it here
+    plugins: [glowingLinePlugin, backgroundImagePlugin]
+// 👈 add it here
   }
 });
 
