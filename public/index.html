@@ -435,39 +435,6 @@ const glowingLinePlugin = {
   }, 100);
 
             
-// ✅ Preload image once
-const watermarkImage = new Image();
-watermarkImage.src = 'logo.png'; // Change path if needed
-
-// ✅ Register watermark plugin
-Chart.register({
-  id: 'watermarkBackground',
-  beforeDraw: (chart) => {
-    const ctx = chart.ctx;
-    const { width, height } = chart;
-
-    // Only draw if the image is fully loaded
-    if (!watermarkImage.complete) return;
-
-    const imgWidth = width * 0.3;
-    const imgHeight = imgWidth * (watermarkImage.height / watermarkImage.width);
-
-    ctx.save();
-    ctx.globalAlpha = 0.08; // watermark transparency
-    ctx.drawImage(
-      watermarkImage,
-      (width - imgWidth) / 2,
-      (height - imgHeight) / 2,
-      imgWidth,
-      imgHeight
-    );
-    ctx.restore();
-  }
-});
-
-
-
-            
             new Chart(document.getElementById("coinChart"), {
   type: "line",
   data: {
