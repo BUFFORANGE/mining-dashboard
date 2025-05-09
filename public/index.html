@@ -272,10 +272,7 @@
       </div>
       <div id="total-mined-weekly">
         Total Mined Weekly: <span id="weekly-value">Loading...</span>
-      </div>
-      <div id="total-mined-monthly">
-        Total Mined Monthly: <span id="monthly-value">Loading...</span>
-      </div>
+      </div>  
     </div>
 
     <canvas id="usdChart"></canvas>
@@ -332,11 +329,6 @@
             const last7Days = usdData.slice(-7);
             const totalWeekly = last7Days.reduce((a, b) => a + b, 0);
             document.getElementById("weekly-value").textContent = `$${totalWeekly.toFixed(2)}`;
-
-            const last30Days = usdData.slice(-30);
-            const totalMonthly = last30Days.reduce((a, b) => a + b, 0);
-            document.getElementById("monthly-value").textContent = `$${totalMonthly.toFixed(2)}`;
-
 
             document.getElementById("update-time").textContent = `Updated: ${new Date().toLocaleString()}`;
 
