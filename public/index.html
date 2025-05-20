@@ -280,7 +280,6 @@
     <canvas id="usdChart"></canvas>
     <div id="daily-ath">Daily ATH: Loading...</div>
     <canvas id="coinChart"></canvas>
-    <canvas id="coinChart"></canvas>
 
 <!-- Total Per Coin Info Box -->
 <div id="coin-totals" style="margin-top: 2rem; display: flex; justify-content: space-around; flex-wrap: wrap; font-size: 1.2rem; color: #00fff7;">
@@ -336,10 +335,11 @@ data.forEach(d => {
   totalKAS += (d.KAS || 0) * rates.KAS;
 });
 
-document.getElementById("btc-total").textContent = `$${totalBTC.toFixed(2)}`;
-document.getElementById("ltc-total").textContent = `$${totalLTC.toFixed(2)}`;
-document.getElementById("doge-total").textContent = `$${totalDOGE.toFixed(2)}`;
-document.getElementById("kas-total").textContent = `$${totalKAS.toFixed(2)}`;
+document.getElementById("total-btc").textContent = `$${totalBTC.toFixed(2)}`;
+document.getElementById("total-ltc").textContent = `$${totalLTC.toFixed(2)}`;
+document.getElementById("total-doge").textContent = `$${totalDOGE.toFixed(2)}`;
+document.getElementById("total-kas").textContent = `$${totalKAS.toFixed(2)}`;
+
 
 
             const dominantPoints = getDominantPoints(usdData, 130);
