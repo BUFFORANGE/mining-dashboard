@@ -280,6 +280,16 @@
     <canvas id="usdChart"></canvas>
     <div id="daily-ath">Daily ATH: Loading...</div>
     <canvas id="coinChart"></canvas>
+    <canvas id="coinChart"></canvas>
+
+<!-- Total Per Coin Info Box -->
+<div id="coin-totals" style="margin-top: 2rem; display: flex; justify-content: space-around; flex-wrap: wrap; font-size: 1.2rem; color: #00fff7;">
+  <div><strong>BTC:</strong> <span id="total-btc">Loading...</span></div>
+  <div><strong>LTC:</strong> <span id="total-ltc">Loading...</span></div>
+  <div><strong>DOGE:</strong> <span id="total-doge">Loading...</span></div>
+  <div><strong>KAS:</strong> <span id="total-kas">Loading...</span></div>
+</div>
+
   </div>
 
   <script>
@@ -315,6 +325,22 @@
               (d.DOGE || 0) * rates.DOGE +
               (d.KAS || 0) * rates.KAS
             );
+
+            // Sum individual coin totals in USD
+let totalBTC = 0, totalLTC = 0, totalDOGE = 0, totalKAS = 0;
+
+data.forEach(d => {
+  totalBTC += (d.BTC || 0) * rates.BTC;
+  totalLTC += (d.LTC || 0) * rates.LTC;
+  totalDOGE += (d.DOGE || 0) * rates.DOGE;
+  totalKAS += (d.KAS || 0) * rates.KAS;
+});
+
+document.getElementById("btc-total").textContent = `$${totalBTC.toFixed(2)}`;
+document.getElementById("ltc-total").textContent = `$${totalLTC.toFixed(2)}`;
+document.getElementById("doge-total").textContent = `$${totalDOGE.toFixed(2)}`;
+document.getElementById("kas-total").textContent = `$${totalKAS.toFixed(2)}`;
+
 
             const dominantPoints = getDominantPoints(usdData, 130);
 
